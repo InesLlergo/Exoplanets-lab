@@ -1,16 +1,141 @@
 ---
-
+// No se necesita JavaScript del lado del servidor para esta vista estática.
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Exoplanet</title>
-	</head>
-	<body>
-		<h1>Exoplanet</h1>
-	</body>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Exoplanet Adventure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="card">
+        <button class="translate-button">EN / ES</button>
+
+        <div class="image-placeholder"></div>
+        
+        <h1>
+            Embark on an <span class="highlight">Exoplanet</span><br>
+            <span class="adventure-text">Adventure</span>
+        </h1>
+        <p>
+            Discover distant worlds, learn about their unique characteristics, and unlock 
+            the mysteries of the universe. Your journey to the stars begins now!
+        </p>
+        <button>Start Exploring</button>
+    </main>
+</body>
 </html>
+
+<style>
+    :root {
+        --font-main: 'Poppins', system-ui, sans-serif;
+    }
+
+    body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+        font-family: var(--font-main);
+        background-color: #0d0f1a;
+        background-image: 
+            radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.3), transparent 40%),
+            radial-gradient(circle at 85% 80%, rgba(192, 132, 252, 0.15), transparent 40%);
+    }
+
+    /* --- CAMBIOS EN LA TARJETA --- */
+    .card {
+        /* Se añade position: relative para controlar la posición del botón hijo */
+        position: relative; 
+        background-color: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        padding: 1.5rem 2rem;
+        /* Hacemos la tarjeta más ancha */
+        max-width: 720px;
+        width: 90%; /* Asegura que no se desborde en pantallas muy pequeñas */
+        text-align: center;
+        margin: 1rem;
+    }
+
+    /* --- CAMBIOS EN EL BOTÓN DE TRADUCCIÓN --- */
+    .translate-button {
+        position: absolute;
+        top: 1.5rem;   /* 24px desde el borde SUPERIOR de la tarjeta */
+        right: 2rem;  /* 32px desde el borde DERECHO de la tarjeta */
+        
+        background-color: #1f2937; /* Color sólido oscuro como en la imagen */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #9ca3af;
+        font-family: var(--font-main);
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .translate-button:hover {
+        background-color: #374151;
+        color: #ffffff;
+    }
+
+    .image-placeholder {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background-color: rgba(31, 41, 55, 0.5);
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .card h1 {
+        color: #f9fafb;
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 0 0 1rem;
+    }
+    
+    .highlight {
+        color: #4338ca;
+        font-weight: 700;
+    }
+    
+    .adventure-text {
+        font-weight: 600;
+    }
+
+    .card p {
+        color: #9ca3af;
+        font-size: 0.9rem;
+        font-weight: 300;
+        line-height: 1.6;
+        margin: 0 0 2rem;
+    }
+
+    button {
+        background-image: linear-gradient(to right, #4f46e5, #6366f1);
+        color: #ffffff;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: var(--font-main);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    }
+</style>
