@@ -1,0 +1,81 @@
+---
+interface Props {
+	title: string;
+}
+const { title } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <style>
+      /* Base CSS */
+      :root { --font-main: 'Poppins', system-ui, sans-serif; }
+      body { 
+        margin: 0; 
+        font-family: var(--font-main); 
+        /* Fondo de la imagen original */
+        background: radial-gradient(circle at center, #0f172a, #020617); 
+        color: #fff; 
+        min-height: 100vh; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        text-align: center; 
+      }
+      
+      /* Estilos generales para el contenedor principal de tu diseño */
+      .adventure-container { 
+          /* Quité 'background', 'backdrop-filter', 'border', 'border-radius' */
+          /* para que el contenido se integre mejor con el fondo del body */
+          max-width: 960px; 
+          width: 90%; 
+          padding: 2rem;
+          text-align: center; 
+      }
+      
+      /* Estilos para que el slot ocupe el centro y se vea el contenido */
+      section { 
+          width: 100%; 
+          min-height: 100vh; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          flex-direction: column; 
+          padding: 2rem; 
+      }
+
+      /* Estilo del botón general (el componente menu.astro lo sobrescribe, pero se deja por si acaso) */
+      button, a.button { 
+        background: linear-gradient(to right,#4f46e5,#6366f1); 
+        color:#fff; 
+        border:none; 
+        border-radius:.75rem; 
+        padding:.8rem 1.5rem; 
+        font-size:1rem; 
+        font-weight:600; 
+        cursor:pointer; 
+        transition: transform 0.2s ease, box-shadow 0.2s ease; 
+        box-shadow:0 4px 15px rgba(79,70,229,0.4); 
+        text-decoration: none; 
+        display: inline-block; 
+      }
+
+      button:hover, a.button:hover { 
+        transform: scale(1.05); 
+        box-shadow:0 6px 20px rgba(79,70,229,0.5); 
+      }
+
+      /* Estilos de texto */
+      h1 { font-size: 2.5rem; margin-bottom: 1rem; color: #f9fafb; }
+      .subtitle { font-size: 1rem; color: #9ca3af; margin-bottom: 2rem; }
+
+      /* Eliminé todos los estilos relacionados con .mode-card, .modes, .learning, .lab, etc. */
+    </style>
+</head>
+<body>
+    <slot />
+</body>
+</html>

@@ -24,7 +24,7 @@
             Discover distant worlds, learn about their unique characteristics, and unlock 
             the mysteries of the universe. Your journey to the stars begins now!
         </p>
-        <button>Start Exploring</button>
+        <a href="/menu" class="cta-button">Start Exploring</a>
     </main>
 
     <style>
@@ -64,11 +64,7 @@
             background-color: #1f2937;
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #9ca3af;
-            font-family: var(--font-main);
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.75rem;
-            cursor: pointer;
+            /* Se eliminan los estilos duplicados, ya que los heredará de "button" */
             transition: background-color 0.2s ease, color 0.2s ease;
         }
 
@@ -110,7 +106,9 @@
             margin: 0 0 2rem;
         }
 
-        button {
+        /* 👇 CORRECCIÓN AQUÍ 👇 */
+        /* Esta regla ahora aplica a CUALQUIER botón Y a nuestro enlace con clase .cta-button */
+        button, .cta-button {
             background-image: linear-gradient(to right, #4f46e5, #6366f1);
             color: #ffffff;
             border: none;
@@ -122,9 +120,11 @@
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+            text-decoration: none;
         }
 
-        button:hover {
+        /* 👇 Y AQUÍ 👇 */
+        button:hover, .cta-button:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
         }

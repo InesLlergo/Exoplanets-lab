@@ -1,0 +1,496 @@
+---
+// Asegúrate de que la importación apunte correctamente a tu Layout.astro
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="ExoLab: Laboratory Mode">
+    <div class="lab-container">
+        
+        <aside class="sidebar">
+            <header class="lab-header-mobile">
+                <h1>ExoLab</h1>
+            </header>
+            
+            <div class="section-title">Data Selection</div>
+
+            <div class="selection-group">
+                <label for="system">Exoplanet System</label>
+                <div class="dropdown">
+                    <span class="dropdown-label">Kepler-186</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="selection-group">
+                <label for="data-type">Data Type</label>
+                <div class="dropdown">
+                    <span class="dropdown-label">Transit Photometry</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="selection-group">
+                <label for="time-range">Time Range</label>
+                <div class="dropdown">
+                    <span class="dropdown-label">Last 30 Days</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+            
+            <button class="analyze-button">
+                Analyze with AI
+            </button>
+
+            <a href="/explore" class="secondary-button">
+                View Analysis Results
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Laboratory Mode</h1>
+                <p>Analyze exoplanet data using advanced AI models.</p>
+            </header>
+
+            <h2>Analysis Results</h2>
+
+            <div class="results-grid">
+                
+                <div class="data-card transit-data">
+                    <div class="card-header">
+                        <h3>Exoplanet Transit Data</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                    </div>
+                    
+                    <div class="value-row">
+                        <span class="main-value">0.0012</span>
+                        <span class="change positive">↑ +0.02%</span>
+                    </div>
+
+                    <p class="time-label">Last 30 Days</p>
+
+                    <div class="chart-placeholder line-chart">
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width:100%; height:100%;">
+                            <defs>
+                                <linearGradient id="transitGradient" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#6366F1" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#020617" stop-opacity="0.1"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M0 25 C 10 5, 20 25, 30 10, 40 20, 50 5, 60 20, 70 10, 80 25, 90 15, 100 20" fill="none" stroke="#6366F1" stroke-width="1" vector-effect="non-scaling-stroke"/>
+                            <path d="M0 25 C 10 5, 20 25, 30 10, 40 20, 50 5, 60 20, 70 10, 80 25, 90 15, 100 20 L100 30 L0 30 Z" fill="url(#transitGradient)"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="data-card atmosphere-data">
+                    <div class="card-header">
+                        <h3>Atmospheric Composition</h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M12 21.5C17.246 21.5 21.5 17.246 21.5 12C21.5 6.754 17.246 2.5 12 2.5C6.754 2.5 2.5 6.754 2.5 12C2.5 17.246 6.754 21.5 12 21.5Z" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2.5C9.754 2.5 7.74 3.75 6.5 5.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 5.5C18.76 7.25 19.5 9.254 19.5 12" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 18.5C18.76 16.75 19.5 14.746 19.5 12" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 18.5C7.74 16.75 9.754 15.5 12 15.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+
+                    <div class="composition-row">
+                        <span class="main-value">78% Nitrogen</span>
+                        <span class="change negative">↓ -1.5%</span>
+                    </div>
+
+                    <div class="chart-placeholder bar-chart">
+                        <div class="bars">
+                            <div class="bar-set"><div class="bar" style="height: 50%;"></div><div class="label">O₂</div></div>
+                            <div class="bar-set"><div class="bar" style="height: 90%;"></div><div class="label">N₂</div></div>
+                            <div class="bar-set"><div class="bar" style="height: 10%;"></div><div class="label">CO₂</div></div>
+                            <div class="bar-set"><div class="bar" style="height: 70%;"></div><div class="label">CH₄</div></div>
+                            <div class="bar-set"><div class="bar" style="height: 55%;"></div><div class="label">H₂O</div></div>
+                            <div class="bar-set"><div class="bar" style="height: 30%;"></div><div class="label">Other</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-summary">
+                <h2>Data Summary</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                            <th>Units</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Orbital Period</td>
+                            <td>365.25</td>
+                            <td>days</td>
+                        </tr>
+                        <tr>
+                            <td>Radius</td>
+                            <td>1.0</td>
+                            <td>Earth radii</td>
+                        </tr>
+                        <tr>
+                            <td>Mass</td>
+                            <td>1.1</td>
+                            <td>Earth masses</td>
+                        </tr>
+                        <tr>
+                            <td>Equilibrium Temp.</td>
+                            <td>273</td>
+                            <td>K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</Layout>
+
+<style>
+    /* El CSS existente (Sección 1 a 6) se mantiene igual */
+    /* -------------------------------------- */
+    /* 1. LAYOUT PRINCIPAL (GRID) */
+    /* -------------------------------------- */
+    .lab-container {
+        display: grid;
+        grid-template-columns: 280px 1fr; 
+        min-height: 100vh;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto; 
+    }
+
+    .lab-header-mobile {
+        display: none;
+    }
+
+    /* -------------------------------------- */
+    /* 2. SIDEBAR (Data Selection) */
+    /* -------------------------------------- */
+    .sidebar {
+        background-color: #0F172A; 
+        padding: 2rem 1.5rem;
+        border-right: 1px solid #1E293B;
+        text-align: left;
+    }
+
+    .section-title {
+        color: #F9FAFB;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .selection-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .selection-group label {
+        display: block;
+        color: #9CA3AF;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dropdown {
+        background-color: #1E293B; 
+        padding: 0.8rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #374151;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #F9FAFB;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .dropdown-label {
+        color: #fff;
+    }
+
+    .chevron {
+        width: 18px;
+        height: 18px;
+        color: #9CA3AF;
+    }
+
+    .analyze-button {
+        width: 100%;
+        background: linear-gradient(to right, #4f46e5, #6366f1);
+        color: #fff;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem; /* Ajuste el margen para el nuevo botón */
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+    
+    .analyze-button:hover {
+        box-shadow: 0 6px 15px rgba(79, 70, 229, 0.5);
+    }
+    
+    /* 🌟 CSS para el Nuevo Botón 🌟 */
+    .secondary-button {
+        display: block; /* Para que ocupe todo el ancho */
+        text-decoration: none; /* Quitar subrayado del enlace */
+        width: 100%;
+        background-color: transparent;
+        color: #D1D5DB; /* Gris claro */
+        border: 1px solid #374151; /* Borde gris oscuro */
+        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        text-align: center;
+        margin-top: 0.5rem; /* Pequeño espacio debajo del botón principal */
+    }
+
+    .secondary-button:hover {
+        background-color: #1F2937; /* Fondo sutil al pasar el ratón */
+        color: #F9FAFB; /* Texto más blanco al pasar el ratón */
+        border-color: #4B5563;
+    }
+    /* -------------------------------------- */
+
+
+    /* 3. MAIN CONTENT (Dashboard) - Mantenido */
+    .main-content {
+        padding: 2rem 2.5rem;
+        color: #F9FAFB;
+        text-align: left;
+    }
+
+    .main-header {
+        margin-bottom: 3rem;
+    }
+
+    .main-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #F9FAFB; 
+    }
+
+    .main-header p {
+        color: #9CA3AF;
+        font-size: 1.1rem;
+    }
+
+    .main-content h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #F9FAFB;
+    }
+
+    /* -------------------------------------- */
+    /* 4. RESULTS GRID (Tarjetas) - Mantenido */
+    /* -------------------------------------- */
+    .results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .data-card {
+        background-color: #0F172A; 
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border: 1px solid #1E293B;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.1rem;
+        color: #9CA3AF;
+        font-weight: 500;
+    }
+
+    .card-header .icon {
+        width: 24px;
+        height: 24px;
+        color: #6366F1;
+    }
+
+    .main-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-right: 1rem;
+    }
+    
+    .time-label {
+        color: #9CA3AF;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Indicadores de Cambio */
+    .change {
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.3rem;
+    }
+
+    .positive {
+        color: #10B981; 
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .negative {
+        color: #EF4444; 
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+    
+    /* Gráfico de Líneas (Transit Data) */
+    .chart-placeholder.line-chart {
+        width: 100%;
+        height: 100px;
+        margin-top: 1rem;
+    }
+    
+    /* Gráfico de Barras (Atmosphere Composition) */
+    .chart-placeholder.bar-chart {
+        width: 100%;
+        height: 150px;
+        padding-top: 1rem;
+    }
+    
+    .bars {
+        display: flex;
+        align-items: flex-end;
+        height: 100%;
+        justify-content: space-around;
+        gap: 0.5rem;
+    }
+    
+    .bar-set {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 40px;
+    }
+    
+    .bar {
+        width: 100%;
+        background-color: #6366F1;
+        border-radius: 3px 3px 0 0;
+        transition: height 0.3s;
+        opacity: 0.9;
+    }
+    
+    .bar-set .label {
+        color: #9CA3AF;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* -------------------------------------- */
+    /* 5. DATA SUMMARY TABLE - Mantenido */
+    /* -------------------------------------- */
+    .data-summary h2 {
+        margin-bottom: 1rem;
+    }
+    
+    .data-summary table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background-color: #0F172A;
+        border-radius: 1rem;
+        overflow: hidden; 
+        border: 1px solid #1E293B;
+    }
+
+    .data-summary th, .data-summary td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+    }
+
+    .data-summary th {
+        background-color: #1E293B;
+        color: #D1D5DB;
+        font-weight: 600;
+        border-bottom: 1px solid #374151;
+        font-size: 0.9rem;
+    }
+    
+    .data-summary td {
+        border-bottom: 1px solid #1E293B;
+        color: #E5E7EB;
+        font-weight: 500;
+    }
+
+    .data-summary tbody tr:nth-child(odd) {
+        background-color: #111827;
+    }
+
+    .data-summary tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .data-summary tbody tr td:nth-child(2) {
+        color: #fff; 
+    }
+
+    /* -------------------------------------- */
+    /* 6. MEDIA QUERIES (Responsividad) - Mantenido */
+    /* -------------------------------------- */
+    @media (max-width: 1024px) {
+        .lab-container {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            padding: 1.5rem;
+            border-right: none;
+            border-bottom: 1px solid #1E293B;
+        }
+        
+        .lab-header-mobile {
+            display: block;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            color: #6366F1;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .main-content {
+            padding: 1.5rem;
+        }
+
+        .main-header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .main-header h1 {
+            display: none; 
+        }
+        
+        .main-content h2 {
+            text-align: center;
+        }
+
+        .results-grid {
+            grid-template-columns: 1fr; 
+        }
+    }
+</style>

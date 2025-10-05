@@ -1,0 +1,319 @@
+---
+// Asumimos que Layout.astro proporciona el fondo oscuro.
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Exoplanet Analysis Results">
+    
+    <nav class="navbar-explorer-top-fixed">
+        <div class="logo">Cosmos Explorer</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/explore" class="active">Explore</a>
+            <a href="/learn">Learn</a>
+            <a href="/community">Community</a>
+        </div>
+    </nav>
+    
+    <div class="results-page-container">
+        
+        <header class="page-header">
+            <p class="ai-status">AI PREDICTION COMPLETE</p>
+            <h1 class="main-title">Exoplanet Analysis Results</h1>
+            <p class="subtitle">Our model has analyzed the stellar data and predicts the following characteristics for exoplanet Kepler-186f.</p>
+        </header>
+
+        <div class="card-and-factors-wrapper">
+            
+            <section class="habitability-card-centered">
+                <h2 class="card-title">Habitability Probability</h2>
+                <div class="probability-value">78%</div>
+                <div class="candidate-tag">
+                    <svg viewBox="0 0 24 24" fill="#34D399" class="check-icon"><circle cx="12" cy="12" r="10"/><path fill="#020617" d="M9.8 14.5l-2.6-2.6L6 13.1l3.8 3.8 6.4-6.4-1.2-1.2z"/></svg>
+                    <span>Promising Candidate</span>
+                </div>
+            </section>
+            
+            <section class="key-factors-complete">
+                <h2 class="factors-title">Key Factors Influencing Prediction</h2>
+                <p class="factors-subtitle">The model's prediction is based on these critical planetary and stellar characteristics.</p>
+
+                <div class="factor-charts">
+                    
+                    <div class="chart-item">
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: 90%;"></div>
+                        </div>
+                        <p class="chart-label">Temperature</p>
+                    </div>
+
+                    <div class="chart-item">
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: 85%;"></div>
+                        </div>
+                        <p class="chart-label">Atmosphere</p>
+                    </div>
+
+                    <div class="chart-item">
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: 70%;"></div>
+                        </div>
+                        <p class="chart-label">Water Presence</p>
+                    </div>
+
+                    <div class="chart-item">
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: 75%;"></div>
+                        </div>
+                        <p class="chart-label">Stellar Distance</p>
+                    </div>
+                    
+                </div>
+            </section>
+
+        </div>
+    </div>
+</Layout>
+
+<style>
+    /* -------------------------------------- */
+    /* NAVBAR SUPERIOR FIJA (DISEÑO FINAL) */
+    /* -------------------------------------- */
+    .navbar-explorer-top-fixed {
+        position: fixed;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        
+        display: flex;
+        align-items: center;
+        gap: 3rem; 
+        padding: 1rem 2rem;
+        color: #F9FAFB;
+        background-color: #0F172A; 
+        border-radius: 1rem; 
+        border: 1px solid #1E293B; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        z-index: 100;
+        max-width: max-content;
+    }
+
+    .navbar-explorer-top-fixed .logo {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #F9FAFB;
+        margin-right: 1rem;
+    }
+
+    .navbar-explorer-top-fixed .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .navbar-explorer-top-fixed .nav-links a {
+        color: #9CA3AF;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .navbar-explorer-top-fixed .nav-links a.active {
+        color: #F9FAFB;
+        font-weight: 600;
+    }
+    
+    /* -------------------------------------- */
+    /* LAYOUT Y CONTENEDOR PRINCIPAL */
+    /* -------------------------------------- */
+    .results-page-container {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 10rem; /* Espacio para la navbar fija */
+        padding-bottom: 5rem; 
+        color: #F9FAFB;
+        overflow-x: hidden;
+    }
+    
+    .card-and-factors-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 900px;
+        padding: 0 1.5rem;
+    }
+    
+    /* -------------------------------------- */
+    /* ENCABEZADO Y TÍTULOS */
+    /* -------------------------------------- */
+    .page-header {
+        text-align: center;
+        max-width: 700px;
+        margin-bottom: 3rem;
+    }
+
+    .ai-status {
+        color: #6366F1;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .main-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .subtitle {
+        color: #9CA3AF;
+        font-size: 1.1rem;
+        margin: 0 auto;
+        max-width: 90%;
+    }
+
+    /* -------------------------------------- */
+    /* TARJETA DE HABITABILIDAD */
+    /* -------------------------------------- */
+    .habitability-card-centered {
+        background-color: #0F172A; 
+        border-radius: 1.5rem;
+        padding: 3rem 2rem;
+        margin-bottom: 4rem; /* Más espacio para los factores */
+        border: 1px solid #1E293B;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .card-title {
+        color: #9CA3AF;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .probability-value {
+        font-size: 5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #6366F1, #93C5FD); 
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .candidate-tag {
+        display: inline-flex;
+        align-items: center;
+        background-color: rgba(52, 211, 153, 0.1); 
+        color: #34D399; 
+        padding: 0.4rem 1.2rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .check-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.5rem;
+    }
+    
+    /* -------------------------------------- */
+    /* FACTORES CLAVE (Completo) */
+    /* -------------------------------------- */
+    .key-factors-complete {
+        text-align: left;
+        background-color: #0F172A; 
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid #1E293B;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 100%;
+    }
+    
+    .factors-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .factors-subtitle {
+        color: #9CA3AF;
+        margin-bottom: 2.5rem;
+    }
+
+    .factor-charts {
+        display: flex;
+        justify-content: space-around;
+        gap: 2rem;
+        height: 150px;
+        align-items: flex-end; 
+    }
+
+    .chart-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 120px;
+    }
+
+    .chart-bar-container {
+        width: 10px;
+        height: 100%; 
+        background-color: #1E293B; 
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column-reverse; 
+        overflow: hidden;
+    }
+
+    .chart-bar {
+        width: 100%;
+        background-color: #6366F1;
+        height: var(--bar-height, 50%); /* Usamos var o el estilo en línea */
+    }
+    
+    .chart-label {
+        margin-top: 1rem;
+        color: #9CA3AF;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Asignación de alturas para las barras de la imagen */
+    .chart-item:nth-child(1) .chart-bar { height: 90%; }
+    .chart-item:nth-child(2) .chart-bar { height: 85%; }
+    .chart-item:nth-child(3) .chart-bar { height: 70%; }
+    .chart-item:nth-child(4) .chart-bar { height: 75%; }
+    
+    /* -------------------------------------- */
+    /* MEDIA QUERIES */
+    /* -------------------------------------- */
+    @media (max-width: 768px) {
+        .navbar-explorer-top-fixed {
+            top: 1rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .results-page-container {
+            padding-top: 12rem;
+        }
+        
+        .main-title {
+            font-size: 2.25rem;
+        }
+        
+        .key-factors-complete {
+            padding: 1.5rem;
+        }
+    }
+</style>
