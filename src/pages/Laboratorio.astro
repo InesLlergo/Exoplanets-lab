@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EXOPLANET LAB</title>
+<style>
+:root {
+  --bg: #0b1120;
+  --panel-bg: #11172a;
+  --accent: #3b82f6;
+  --text-main: #f9fafb;
+  --text-sub: #9ca3af;
+  --card-bg: rgba(255,255,255,0.04);
+  --border-color: rgba(255,255,255,0.08);
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial;
+  background: radial-gradient(circle at top, #0b1225 0%, #060913 80%);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+header {
+  width: 100%;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #60a5fa;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  text-align: center;
+}
+
+/* --- Bloque de estimación --- */
+#prediction {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 0 40px rgba(30,58,138,0.2);
+}
+
+#prediction h2 {
+  color: var(--text-sub);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+#prediction .value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #93c5fd;
+}
+
+#prediction .label {
+  font-size: 1rem;
+  color: #10b981;
+}
+
+/* --- Simulación --- */
+#sim-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 30px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  max-width: 900px;
+}
+
+canvas {
+  background: #071025;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+#plot {
+  margin-top: 12px;
+}
+
+/* --- Panel de control --- */
+#control-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem 2rem;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.4);
+}
+
+#control-panel h3 {
+  color: var(--text-sub);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+}
+
+label {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin-bottom: 0.2rem;
+}
+
+input[type=range] {
+  width: 100%;
+}
+
+button {
+  background: linear-gradient(to right, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+#results {
+  margin-top: 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+</style>
+</head>
+<body>
+
+<header>🪐 EXOPLANET LAB</header>
+
+<main>
+  <section id="prediction">
+    <h2>AI HABITABILITY ESTIMATION</h2>
+    <div class="value">80%</div>
+    <div class="label">Promising Candidate</div>
+  </section>
+
+  <section id="sim-container">
+    <canvas id="view" width="600" height="600"></canvas>
+    <canvas id="plot" width="600" height="200"></canvas>
+  </section>
+
+  <section id="control-panel">
+    <div style="text-align:center;margin-bottom:1rem;">
+      <button id="play">▶️ Reproducir</button>
+      <button id="reset">↺ Reiniciar</button>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Velocidad de simulación: <span id="speedVal">1</span>x</label>
+        <input id="speed" type="range" min="0.1" max="10" step="0.1" value="1">
+      </div>
+
+      <div class="control-group">
+        <label>Masa planetaria (M⊕): <span id="massVal">1</span></label>
+        <input id="mass" type="range" min="0.1" max="500" step="0.1" value="1">
+      </div>
+
+      <div class="control-group">
+        <label>Periodo orbital (días): <span id="perVal">365</span></label>
+        <input id="period" type="range" min="10" max="2000" value="365">
+      </div>
+
+      <div class="control-group">
+        <label>Semieje mayor (AU): <span id="aVal">1</span></label>
+        <input id="a" type="range" min="0.1" max="5" step="0.01" value="1">
+      </div>
+
+      <div class="control-group">
+        <label>Radio planetario (R⊕): <span id="rVal">1</span></label>
+        <input id="radius" type="range" min="0.1" max="20" step="0.1" value="1">
+      </div>
+
+      <div class="control-group">
+        <label>Inclinación (°): <span id="inclVal">89</span></label>
+        <input id="incl" type="range" min="0" max="90" value="89">
+      </div>
+
+      <div class="control-group">
+        <label>Radio estelar (R☉): <span id="starRVal">1</span></label>
+        <input id="starR" type="range" min="0.5" max="2" step="0.01" value="1">
+      </div>
+    </div>
+
+    <div id="results"></div>
+  </section>
+</main>
+
+<footer>Simulador del método de tránsito (un solo planeta) – EXOPLANET LAB</footer>
+
+<script>
+/* ======== Lógica del simulador original ======== */
+const view=document.getElementById('view');
+const ctx=view.getContext('2d');
+const plot=document.getElementById('plot');
+const pctx=plot.getContext('2d');
+const resDiv=document.getElementById('results');
+
+let t=0, playing=false, speed=1;
+let incl=89*Math.PI/180;
+const AU=1.496e11, day=86400, R_sun=6.957e8, R_earth=6.371e6, M_earth=5.972e24, G=6.67430e-11;
+let planet={color:'#4ec9ff',mass:1,period:365,a:1,r:1};
+let times=[], fluxes=[], maxPoints=1000, transits=[];
+
+function planetPosition(theta,a){const x=a*Math.cos(theta);const y=a*Math.sin(theta)*Math.cos(incl);const z=a*Math.sin(theta)*Math.sin(incl);return{x,y,z};}
+function circleOverlapArea(R,r,d){if(d>=R+r)return 0;if(d<=Math.abs(R-r))return Math.PI*Math.min(R,r)**2;const R2=R*R,r2=r*r;const a=Math.acos((d*d+R2-r2)/(2*d*R));const b=Math.acos((d*d+r2-R2)/(2*d*r));return R2*a+r2*b-0.5*(R2*Math.sin(2*a)+r2*Math.sin(2*b));}
+function computeFlux(theta){const pos=planetPosition(theta,planet.a);const d=Math.hypot(pos.y,pos.z);const R_star=R_sun*Number(document.getElementById('starR').value);const blocked=circleOverlapArea(R_star,planet.r*R_earth,d*AU);return Math.max(0,1-blocked/(Math.PI*R_star*R_star));}
+function detectTransit(){const N=fluxes.length;if(N<3)return;const f0=fluxes[N-3],f1=fluxes[N-2],f2=fluxes[N-1];if(f1<f0&&f1<f2){transits.push({time:times[N-2],flux:f1});if(transits.length>50)transits.shift();}}
+function drawPlot(){pctx.clearRect(0,0,plot.width,plot.height);pctx.fillStyle='rgba(6,12,22,0.6)';pctx.fillRect(0,0,plot.width,plot.height);pctx.strokeStyle='rgba(200,220,255,0.12)';pctx.beginPath();pctx.moveTo(40,10);pctx.lineTo(40,plot.height-30);pctx.lineTo(plot.width-10,plot.height-30);pctx.stroke();if(!fluxes.length)return;const w=plot.width-60,h=plot.height-50,N=fluxes.length;const minF=Math.min(...fluxes),maxF=Math.max(...fluxes);const lo=Math.max(0,minF-0.001),hi=Math.min(1,maxF+0.001);const currentFlux=fluxes[N-1];const transitDepth=1-currentFlux;pctx.fillStyle='rgba(70,200,255,0.2)';const yTransit=10+h*(1-currentFlux);pctx.fillRect(40,yTransit,w,h*transitDepth);pctx.strokeStyle='rgba(120,200,255,0.95)';pctx.beginPath();for(let i=0;i<N;i++){const x=40+(i/(N-1))*w;const y=10+(1-(fluxes[i]-lo)/(hi-lo))*h;if(i===0)pctx.moveTo(x,y);else pctx.lineTo(x,y);}pctx.stroke();pctx.fillStyle=planet.color;transits.forEach(tr=>{const x=40+((tr.time-times[0])/(times[N-1]-times[0]))*w;const y=10+(1-(tr.flux-lo)/(hi-lo))*h;pctx.beginPath();pctx.arc(x,y,3,0,2*Math.PI);pctx.fill();});}
+function analyzePlanet(){const fluxMin=Math.min(...fluxes);const R_star=R_sun*Number(document.getElementById('starR').value);const estimatedRadius=Math.sqrt(1-fluxMin)*R_star/R_earth;const a_m=planet.a*AU;const T_s=planet.period*day;const estimatedMass=(4*Math.PI**2*a_m**3)/(G*T_s**2)/M_earth;let type;if(estimatedRadius<2)type='Terrestre';else if(estimatedRadius<6)type='Neptuniano';else type='Joviano';const transitDepth=(planet.r*R_earth/R_star)**2;const T_star=5778;const albedo=0.3;const T_eq=T_star*Math.sqrt(R_star/(2*a_m))*Math.pow(1-albedo,0.25);resDiv.innerHTML=`<div>Radio estimado: ${estimatedRadius.toFixed(2)} R⊕</div><div>Masa estimada: ${estimatedMass.toFixed(2)} M⊕</div><div>Tipo: ${type}</div><div>Profundidad de tránsito: ${(transitDepth*100).toFixed(2)} %</div><div>Temperatura de equilibrio: ${T_eq.toFixed(0)} K</div>`;}
+function draw(){ctx.clearRect(0,0,view.width,view.height);const cx=view.width/2,cy=view.height/2;const theta=(t/planet.period)*2*Math.PI;const flux=computeFlux(theta);const starScale=Number(document.getElementById('starR').value);const starRadius=60*starScale;const g=ctx.createRadialGradient(cx,cy,starRadius*0.3,cx,cy,starRadius);g.addColorStop(0,'#fff7c9');g.addColorStop(0.6,'#ffd36b');g.addColorStop(1,'#ff9e3b');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,starRadius,0,2*Math.PI);ctx.fill();const orbitRadius=planet.a*200+starRadius*0.8;ctx.strokeStyle='rgba(200,220,255,0.12)';ctx.beginPath();ctx.ellipse(cx,cy,orbitRadius,orbitRadius*Math.cos(incl),0,0,2*Math.PI);ctx.stroke();const planetX=cx+orbitRadius*Math.cos(theta);const planetY=cy+orbitRadius*Math.sin(theta)*Math.cos(incl);ctx.fillStyle=planet.color;ctx.beginPath();ctx.arc(planetX,planetY,planet.r*5,0,2*Math.PI);ctx.fill();drawPlot();analyzePlanet();}
+function step(now){if(!step.last)step.last=now;const dt=(now-step.last)/1000;step.last=now;if(playing){t+=dt*speed;const theta=(t/planet.period)*2*Math.PI;const f=computeFlux(theta);times.push(t);fluxes.push(f);if(fluxes.length>maxPoints){times.shift();fluxes.shift();}detectTransit();}draw();requestAnimationFrame(step);}
+function updateUI(){incl=Number(document.getElementById('incl').value)*Math.PI/180;speed=Number(document.getElementById('speed').value);planet.mass=Number(document.getElementById('mass').value);planet.period=Number(document.getElementById('period').value);planet.a=Number(document.getElementById('a').value);planet.r=Number(document.getElementById('radius').value);document.getElementById('speedVal').textContent=speed;document.getElementById('massVal').textContent=planet.mass;document.getElementById('perVal').textContent=planet.period;document.getElementById('aVal').textContent=planet.a;document.getElementById('rVal').textContent=planet.r;document.getElementById('inclVal').textContent=Math.round(incl*180/Math.PI);document.getElementById('starRVal').textContent=document.getElementById('starR').value;draw();}
+['incl','speed','period','a','radius','mass','starR'].forEach(id=>document.getElementById(id).addEventListener('input',updateUI));
+document.getElementById('play').addEventListener('click',()=>{playing=!playing;document.getElementById('play').textContent=playing?'⏸ Pausar':'▶️ Reproducir';});
+document.getElementById('reset').addEventListener('click',()=>{t=0;times=[];fluxes=[];transits=[];draw();});
+updateUI();draw();requestAnimationFrame(step);
+</script>
+</body>
+</html>
