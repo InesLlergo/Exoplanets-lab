@@ -172,15 +172,243 @@
 </section>
 
 <!-- 🧪 MODO LABORATORIO -->
+
+<!-- copiar desde aquí -->
+
 <section id="lab">
-  <div class="adventure-container">
-    <h1>Modo Laboratorio 🧪</h1>
-    <p style="max-width:600px; color:#cbd5e1;">
-      Realiza simulaciones de órbitas, mide el brillo estelar y observa cómo los métodos de detección revelan nuevos exoplanetas.
+  <div class="adventure-container" style="background:none;border:none;padding:0;">
+    <h1 style="text-align:center;font-size:1.6rem;">Simulador Experto - Método de Tránsito </h1>
+
+    <p style="text-align:center;max-width:500px;color:#cbd5e1;margin:auto;margin-bottom:0.5rem;font-size:0.9rem;">
+      Observa cómo la luz estelar cambia cuando un planeta transita frente a su estrella. Ajusta los parámetros para explorar.
     </p>
-    <button class="back-btn" onclick="goBackMenu()">Regresar al Menú</button>
+<button class="back-btn" onclick="goBackMenu()">Regresar al Menú</button>
+
+  <footer style="margin-top:6px;font-size:0.75rem;color:#bcd;text-align:center;">
+      Simulador del método de tránsito
+
+  </footer>
+</div>
+
+    <div id="container" style="display:flex;gap:12px;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+      <div>
+        <canvas id="view" width="420" height="420" style="background:#071025;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,0.5);"></canvas>
+        <div style="display:flex;justify-content:center;margin-top:6px">
+          <canvas id="plot" width="420" height="140" style="background:#071025;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,0.5);"></canvas>
+        </div>
+      </div>
+
+      <div id="ui" style="display:flex;flex-direction:column;gap:6px;margin-left:8px;font-size:0.85rem;">
+        <div class="row" style="display:flex;gap:6px;align-items:center;justify-content:center;">
+          <button id="play" style="padding:4px 10px;font-size:0.8rem;">▶️</button>
+          <button id="reset" style="padding:4px 10px;font-size:0.8rem;">↺</button>
+        </div>
+
+        <label>Velocidad simulación: <span id="speedVal">1</span>x</label>
+        <input id="speed" type="range" min="0.1" max="10" step="0.1" value="1" style="width:150px;">
+
+        <h3 style="font-size:0.9rem;margin-top:6px;">Planeta</h3>
+        <label>Masa (M⊕): <span id="massVal">1</span></label>
+        <input id="mass" type="range" min="0.1" max="500" step="0.1" value="1" style="width:150px;">
+        <label>Periodo (días): <span id="perVal">365</span></label>
+        <input id="period" type="range" min="10" max="2000" value="365" style="width:150px;">
+        <label>Semieje (AU): <span id="aVal">1</span></label>
+        <input id="a" type="range" min="0.1" max="5" step="0.01" value="1" style="width:150px;">
+        <label>Radio (R⊕): <span id="rVal">1</span></label>
+        <input id="radius" type="range" min="0.1" max="20" step="0.1" value="1" style="width:150px;">
+        <label>Inclinación (°): <span id="inclVal">89</span></label>
+        <input id="incl" type="range" min="0" max="90" value="89" style="width:150px;">
+
+        <h3 style="font-size:0.9rem;margin-top:6px;">Estrella</h3>
+        <label>Radio (R☉): <span id="starRVal">1</span></label>
+        <input id="starR" type="range" min="0.5" max="2" step="0.01" value="1" style="width:150px;">
+
+        <div style="font-size:0.75rem;color:#cde;">La gráfica muestra el brillo total durante el tránsito.</div>
+        <div id="results" style="margin-top:6px;font-size:0.8rem;background:rgba(255,255,255,0.05);padding:6px;border-radius:6px;width:190px;"></div>
+      </div>
+    </div>
+
+    <footer style="margin-top:6px;font-size:0.75rem;color:#bcd;text-align:center;">
+      Simulador del método de tránsito
+    </footer>
   </div>
+
+  <!-- 🔭 Script funcional -->
+  <script>
+  const view=document.getElementById('view');
+  const ctx=view.getContext('2d');
+  const plot=document.getElementById('plot');
+  const pctx=plot.getContext('2d');
+  const resDiv=document.getElementById('results');
+
+  let t=0, playing=false, speed=1;
+  let incl=89*Math.PI/180;
+  const AU=1.496e11, day=86400, R_sun=6.957e8, R_earth=6.371e6, M_earth=5.972e24, G=6.67430e-11;
+
+  let planet={color:'#4ec9ff',mass:1,period:365,a:1,r:1};
+  let times=[], fluxes=[], maxPoints=800, transits=[];
+
+  function planetPosition(theta,a){
+    const x=a*Math.cos(theta);
+    const y=a*Math.sin(theta)*Math.cos(incl);
+    const z=a*Math.sin(theta)*Math.sin(incl);
+    return {x,y,z};
+  }
+
+  function circleOverlapArea(R,r,d){
+    if(d>=R+r) return 0;
+    if(d<=Math.abs(R-r)) return Math.PI*Math.min(R,r)**2;
+    const R2=R*R,r2=r*r;
+    const a=Math.acos((d*d+R2-r2)/(2*d*R));
+    const b=Math.acos((d*d+r2-R2)/(2*d*r));
+    return R2*a+r2*b-0.5*(R2*Math.sin(2*a)+r2*Math.sin(2*b));
+  }
+
+  function computeFlux(theta){
+    const pos=planetPosition(theta,planet.a);
+    const d=Math.hypot(pos.y,pos.z);
+    const R_star=R_sun*Number(document.getElementById('starR').value);
+    const blocked=circleOverlapArea(R_star,planet.r*R_earth,d*AU);
+    return Math.max(0,1-blocked/(Math.PI*R_star*R_star));
+  }
+
+  function detectTransit(){
+    const N=fluxes.length;
+    if(N<3)return;
+    const f0=fluxes[N-3], f1=fluxes[N-2], f2=fluxes[N-1];
+    if(f1<f0 && f1<f2){
+      transits.push({time:times[N-2],flux:f1});
+      if(transits.length>50)transits.shift();
+    }
+  }
+
+  function drawPlot(){
+    pctx.clearRect(0,0,plot.width,plot.height);
+    pctx.fillStyle='rgba(6,12,22,0.6)';
+    pctx.fillRect(0,0,plot.width,plot.height);
+
+    if(!fluxes.length)return;
+    const w=plot.width-40,h=plot.height-40,N=fluxes.length;
+    const minF=Math.min(...fluxes),maxF=Math.max(...fluxes);
+    const lo=Math.max(0,minF-0.001),hi=Math.min(1,maxF+0.001);
+
+    pctx.strokeStyle='rgba(120,200,255,0.9)';
+    pctx.beginPath();
+    for(let i=0;i<N;i++){
+      const x=30+(i/(N-1))*w;
+      const y=10+(1-(fluxes[i]-lo)/(hi-lo))*h;
+      if(i===0)pctx.moveTo(x,y);else pctx.lineTo(x,y);
+    }
+    pctx.stroke();
+  }
+
+  function analyzePlanet(){
+    const fluxMin=Math.min(...fluxes)||1;
+    const R_star=R_sun*Number(document.getElementById('starR').value);
+    const estimatedRadius=Math.sqrt(1-fluxMin)*R_star/R_earth;
+    const a_m=planet.a*AU;
+    const T_s=planet.period*day;
+    const estimatedMass=(4*Math.PI**2*a_m**3)/(G*T_s**2)/M_earth; 
+
+    const transitDepth = (planet.r*R_earth / R_star)**2;
+    const T_star = 5778; // temperatura solar
+    const albedo = 0.3;
+    const T_eq = T_star * Math.sqrt(R_star/(2*a_m)) * Math.pow(1-albedo,0.25);
+
+    const v_transit = 2*Math.PI*a_m / (planet.period*day) / 1000; // km/s
+
+    resDiv.innerHTML=`
+      <div>Radio: ${estimatedRadius.toFixed(2)} R⊕</div>
+      <div>Masa: ${estimatedMass.toFixed(2)} M⊕</div>
+      <div>Vel. tránsito: ${v_transit.toFixed(2)} km/s</div>
+      <div>Temp. equilibrio: ${T_eq.toFixed(0)} K</div>
+      <div>Profundidad: ${(transitDepth*100).toFixed(2)} %</div>`;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,view.width,view.height);
+    const cx=view.width/2,cy=view.height/2;
+    const theta=(t/planet.period)*2*Math.PI;
+    const flux=computeFlux(theta);
+
+    const starScale = Number(document.getElementById('starR').value);
+    const starRadius = 40 * starScale; 
+
+    const g=ctx.createRadialGradient(cx,cy,starRadius*0.3,cx,cy,starRadius);
+    g.addColorStop(0,'#fff7c9');
+    g.addColorStop(0.6,'#ffd36b');
+    g.addColorStop(1,'#ff9e3b');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(cx,cy,starRadius,0,2*Math.PI);
+    ctx.fill();
+
+    const orbitRadius = planet.a*130 + starRadius*0.8;
+    ctx.strokeStyle='rgba(200,220,255,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,orbitRadius,orbitRadius*Math.cos(incl),0,0,2*Math.PI);
+    ctx.stroke();
+
+    const planetX = cx + orbitRadius * Math.cos(theta);
+    const planetY = cy + orbitRadius * Math.sin(theta) * Math.cos(incl);
+    ctx.fillStyle = planet.color;
+    ctx.beginPath();
+    ctx.arc(planetX, planetY, planet.r*3.5, 0, 2*Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle='#cfe';
+    ctx.font='12px system-ui';
+    ctx.fillText('t='+t.toFixed(1)+' d',8,16);
+    ctx.fillText('Brillo='+flux.toFixed(4),8,30);
+
+    drawPlot();
+    analyzePlanet();
+  }
+
+  function step(now){
+    if(!step.last)step.last=now;
+    const dt=(now-step.last)/1000;step.last=now;
+    if(playing){
+      t+=dt*speed;
+      const theta=(t/planet.period)*2*Math.PI;
+      const f=computeFlux(theta);
+      times.push(t);fluxes.push(f);
+      if(fluxes.length>maxPoints){times.shift();fluxes.shift();}
+      detectTransit();
+    }
+    draw();requestAnimationFrame(step);
+  }
+
+  function updateUI(){
+    incl=Number(document.getElementById('incl').value)*Math.PI/180;
+    speed=Number(document.getElementById('speed').value);
+    planet.mass=Number(document.getElementById('mass').value);
+    planet.period=Number(document.getElementById('period').value);
+    planet.a=Number(document.getElementById('a').value);
+    planet.r=Number(document.getElementById('radius').value);
+
+    document.getElementById('speedVal').textContent=speed;
+    document.getElementById('massVal').textContent=planet.mass;
+    document.getElementById('perVal').textContent=planet.period;
+    document.getElementById('aVal').textContent=planet.a;
+    document.getElementById('rVal').textContent=planet.r;
+    document.getElementById('inclVal').textContent=Math.round(incl*180/Math.PI);
+    document.getElementById('starRVal').textContent=document.getElementById('starR').value;
+
+    draw();
+  }
+
+  ['incl','speed','period','a','radius','mass','starR'].forEach(id=>document.getElementById(id).addEventListener('input',updateUI));
+  document.getElementById('play').addEventListener('click',()=>{playing=!playing;document.getElementById('play').textContent=playing?'⏸':'▶️';});
+  document.getElementById('reset').addEventListener('click',()=>{t=0;times=[];fluxes=[];transits=[];draw();});
+
+  updateUI();draw();requestAnimationFrame(step);
+  </script>
 </section>
+
+
+<!-- pd -->
+
 
 <script>
 const startMenu = document.getElementById("startMenu");
@@ -188,18 +416,9 @@ const menu = document.getElementById("menu");
 const quizSection = document.getElementById("quiz");
 const labSection = document.getElementById("lab");
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hasVisited = localStorage.getItem("hasVisited") === "true";
-  if (hasVisited) {
-    startMenu.classList.remove("visible");
-    menu.classList.add("visible");
-  }
-});
-
 function enterMainMenu() {
   startMenu.classList.remove("visible");
   menu.classList.add("visible");
-  localStorage.setItem("hasVisited", "true");
 }
 
 function startQuiz() {
