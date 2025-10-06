@@ -1,603 +1,1103 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
-// Configuración de la API
-const API_URL = 'http://localhost:8000';
+// API Configuration
+const API_URL = "http://localhost:8000";
 ---
 
-<Layout title="Laboratorio de Tránsito - Simulación Completa">
-  
-  <style is:global>
-    body { display: block; overflow-x: hidden; }
-  </style>
+<Layout title="Transit Laboratory - Complete Simulation">
+    <style is:global>
+        body {
+            display: block;
+            overflow-x: hidden;
+        }
+    </style>
 
-  <style>
-    /* --- ESTILOS DE LOS BOTONES --- */
-    .btn-container {
-      display: flex;
-      gap: 0.75rem; /* 12px */
-    }
-
-    .btn {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 0.5rem; /* 8px */
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    /* Estilo del botón primario (Play/Pausa) */
-    .btn-primary {
-      background-color: #6366f1; /* Indigo 500 */
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background-color: #4f46e5; /* Indigo 600 */
-    }
-    
-    /* Estilo del botón secundario (Reiniciar) */
-    .btn-secondary {
-      background-color: rgba(75, 85, 99, 0.5); /* Gray 600 con transparencia */
-      color: #d1d5db; /* Gray 300 */
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-secondary:hover {
-      background-color: rgba(107, 114, 128, 0.5); /* Gray 500 con transparencia */
-    }
-
-    /* Estilos para la sección de API */
-    .api-section {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      margin-top: 1rem;
-    }
-    
-    .prediction-result {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-left: 4px solid #6366f1;
-    }
-    
-    .prediction-high {
-      border-left-color: #10b981;
-    }
-    
-    .prediction-medium {
-      border-left-color: #f59e0b;
-    }
-    
-    .prediction-low {
-      border-left-color: #ef4444;
-    }
-    
-    .probability-bar {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      margin: 0.5rem 0;
-      overflow: hidden;
-    }
-    
-    .probability-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
-      transition: width 0.5s ease;
-    }
-    
-    .api-button {
-      background: #6366f1;
-      color: white;
-      border: none;
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background 0.3s ease;
-      width: 100%;
-    }
-    
-    .api-button:hover {
-      background: #4f46e5;
-    }
-    
-    .api-button:disabled {
-      background: #6b7280;
-      cursor: not-allowed;
-    }
-    
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    
-    .status-indicator {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 0.5rem;
-    }
-    
-    .status-online {
-      background: #10b981;
-    }
-    
-    .status-offline {
-      background: #ef4444;
-    }
-    
-    .test-button {
-      background: #8b5cf6;
-      color: white;
-      border: none;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-    
-    .test-button:hover {
-      background: #7c3aed;
-    }
-
-    /* Estilos generales del laboratorio (sin cambios) */
-    .lab-page{width:100%;min-height:100vh;padding:1.5rem;box-sizing:border-box;display:flex;flex-direction:column;animation:fadeIn .8s ease-in-out}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.lab-header{text-align:center;margin-bottom:2rem;flex-shrink:0}.lab-header h1{font-size:clamp(1.8rem, 4vw, 2.5rem);margin-bottom:.5rem}.lab-header p{max-width:700px;color:#9ca3af;margin:0 auto 1.5rem;font-size:clamp(.9rem, 2vw, 1rem)}.lab-grid{display:grid;grid-template-columns:1fr 340px;gap:2rem;width:100%;max-width:1600px;margin:0 auto;flex-grow:1}@media (max-width: 960px){.lab-page{padding:1rem}.lab-grid{grid-template-columns:1fr}.ui-panel{order:-1}}.simulation-wrapper{display:flex;flex-direction:column;gap:1rem;min-width:0}.canvas-container{position:relative;background:#071025;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.5);overflow:hidden}#view{width:100%;aspect-ratio:1 / 1}#plot{width:100%;aspect-ratio:3 / 1}.ui-panel{background:rgba(17,24,39,.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:1rem;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;height:fit-content}.ui-panel fieldset{border:1px solid rgba(255,255,255,.1);border-radius:.5rem;padding:1rem;margin:0;display:flex;flex-direction:column;gap:.75rem}.ui-panel legend{padding:0 .5rem;font-size:1rem;font-weight:600;color:#9ca3af}.control-row{display:grid;grid-template-columns:1fr auto;align-items:center}.control-row label{font-size:.9rem;color:#d1d5db}input[type=range]{-webkit-appearance:none;appearance:none;width:100%;grid-column:1 / -1;margin-top:.25rem;background:transparent}input[type=range]:focus{outline:0}input[type=range]::-webkit-slider-runnable-track{height:6px;background:rgba(0,0,0,.3);border-radius:3px}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:18px;width:18px;border-radius:50%;background:#6366f1;cursor:pointer;margin-top:-6px;border:2px solid #e0e7ff}#results{background:rgba(0,0,0,.2);padding:1rem;border-radius:.5rem;font-size:.85rem;line-height:1.7;border-left:3px solid #6366f1}.lab-footer{width:100%;text-align:center;margin-top:auto;padding-top:2rem;color:#6b7280;font-size:.9rem}a.back-btn{text-decoration:none}.description-text{font-size:.85rem;color:#9ca3af;text-align:center;padding:0 1rem .5rem}
-  </style>
-
-  <div class="lab-page">
-    <header class="lab-header">
-      <h1>Simulador de Tránsito Exoplanetario</h1>
-      <p>Una herramienta interactiva para visualizar el método de tránsito, una técnica clave en la detección de planetas fuera de nuestro sistema solar.</p>
-      <a href="/" class="back-btn">Volver al Menú Principal</a>
-    </header>
-
-    <main class="lab-grid">
-      <div class="simulation-wrapper">
-        <div class="canvas-container"><canvas id="view"></canvas></div>
-        <div class="canvas-container"><canvas id="plot"></canvas></div>
-      </div>
-
-      <aside class="ui-panel">
-        <div class="btn-container">
-          <button id="playBtn" class="btn btn-primary">▶️ Reproducir</button>
-          <button id="resetBtn" class="btn btn-secondary">↺ Reiniciar</button>
-        </div>
-        
-        <fieldset>
-          <legend>Simulación</legend>
-          <div class="control-row">
-            <label for="speedSlider">Velocidad (días/segundo)</label>
-            <span id="speedVal">50</span>
-          </div>
-          <input id="speedSlider" type="range" min="1" max="500" step="1" value="50">
-        </fieldset>
-
-        <fieldset>
-          <legend>Planeta</legend>
-          <div class="control-row"><label for="radiusSlider">Radio (R⊕)</label><span id="radiusVal">1</span></div>
-          <input id="radiusSlider" type="range" min="0.1" max="20" step="0.1" value="1">
-          <div class="control-row"><label for="periodSlider">Periodo (días)</label><span id="periodVal">365</span></div>
-          <input id="periodSlider" type="range" min="10" max="2000" value="365">
-          <div class="control-row"><label for="semiMajorAxisSlider">Semieje Mayor (AU)</label><span id="semiMajorAxisVal">1</span></div>
-          <input id="semiMajorAxisSlider" type="range" min="0.1" max="5" step="0.01" value="1">
-          <div class="control-row"><label for="inclinationSlider">Inclinación (°)</label><span id="inclinationVal">90</span></div>
-          <input id="inclinationSlider" type="range" min="80" max="90" step="0.1" value="90">
-        </fieldset>
-        
-        <fieldset>
-          <legend>Estrella central</legend>
-          <div class="control-row"><label for="starRadiusSlider">Radio estelar (R☉)</label><span id="starRadiusVal">1</span></div>
-          <input id="starRadiusSlider" type="range" min="0.5" max="2" step="0.01" value="1">
-        </fieldset>
-
-        <!-- Sección de Predicción por IA -->
-        <div class="api-section">
-          <h3 style="margin: 0 0 1rem 0; color: #9ca3af; font-size: 1rem;">
-            <span id="apiStatus" class="status-indicator status-offline"></span>
-            Predicción por IA
-          </h3>
-          
-          <button id="predictBtn" class="api-button" disabled>
-            🔮 Analizar con IA
-          </button>
-          
-          <button id="testBtn" class="test-button">
-            🧪 Probar con datos de prueba
-          </button>
-          
-          <div id="predictionResult" class="prediction-result" style="display: none;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #e5e7eb;">Resultado del Análisis</h4>
-            
-            <div class="probability-bar">
-              <div id="probabilityFill" class="probability-fill" style="width: 0%"></div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #9ca3af;">
-              <span>0%</span>
-              <span id="probabilityText">0%</span>
-              <span>100%</span>
-            </div>
-            
-            <div id="predictionDetails" style="margin-top: 0.5rem;">
-              <!-- Los detalles se llenarán dinámicamente -->
-            </div>
-          </div>
-        </div>
-        
-        <p class="description-text">La gráfica muestra el brillo relativo y los tránsitos detectados.</p>
-        <div id="results">Esperando datos...</div>
-      </aside>
-    </main>
-
-    <footer class="lab-footer">Laboratorio Interactivo de Aventura Espacial - Con IA Predictiva</footer>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      
-      const AU = 1.496e11;
-      const R_SUN = 6.957e8;
-      const R_EARTH = 6.371e6;
-      const T_SUN = 5778;
-      const M_EARTH = 5.972e24;
-
-      const viewCanvas = document.getElementById('view');
-      const plotCanvas = document.getElementById('plot');
-      const viewCtx = viewCanvas.getContext('2d');
-      const plotCtx = plotCanvas.getContext('2d');
-      const resultsDiv = document.getElementById('results');
-      const playBtn = document.getElementById('playBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      
-      const sliders = {
-        speed: document.getElementById('speedSlider'), planetRadius: document.getElementById('radiusSlider'), period: document.getElementById('periodSlider'),
-        semiMajorAxis: document.getElementById('semiMajorAxisSlider'), inclination: document.getElementById('inclinationSlider'), starRadius: document.getElementById('starRadiusSlider'),
-      };
-      const valueSpans = {
-        speed: document.getElementById('speedVal'), planetRadius: document.getElementById('radiusVal'), period: document.getElementById('periodVal'),
-        semiMajorAxis: document.getElementById('semiMajorAxisVal'), inclination: document.getElementById('inclinationVal'), starRadius: document.getElementById('starRadiusVal'),
-      };
-
-      // Guardamos los valores por defecto para usarlos en la función de reinicio.
-      const defaultValues = {
-        speed: 50, radius: 1, period: 365, semiMajorAxis: 1, inclination: 90, starRadius: 1,
-      };
-
-      let isPlaying = false;
-      let orbitalAngle_rad = 0;
-      let lastTimestamp = 0;
-      let fluxData = [];
-      const maxFluxPoints = 800;
-      const systemParams = {
-        simulationSpeed: 50,
-        planet: { radius_R_earth: 1, period_days: 365, semiMajorAxis_AU: 1, color: "#4ec9ff" },
-        star: { radius_R_sun: 1 },
-        inclination_rad: 90 * (Math.PI / 180),
-      };
-
-      // Variables para la API
-      const API_URL = 'http://localhost:8000';
-      let apiReady = false;
-      let expectedFeatures = 5;
-      let currentPlanetData = null;
-
-      // --- FUNCIONES DE LA SIMULACIÓN ---
-      function getPlanetPosition(angle_rad, semiMajorAxis_AU) {
-        const x = semiMajorAxis_AU * Math.cos(angle_rad);
-        const y = semiMajorAxis_AU * Math.sin(angle_rad) * Math.cos(systemParams.inclination_rad);
-        const z = semiMajorAxis_AU * Math.sin(angle_rad) * Math.sin(systemParams.inclination_rad);
-        return { x, y, z };
-      }
-
-      function circleOverlapArea(r1, r2, dist) {
-        if (dist >= r1 + r2) return 0;
-        if (dist <= Math.abs(r1 - r2)) return Math.PI * Math.min(r1, r2) ** 2;
-        const r1_sq = r1 * r1;
-        const r2_sq = r2 * r2;
-        const dist_sq = dist * dist;
-        const angle1 = Math.acos((dist_sq + r1_sq - r2_sq) / (2 * dist * r1));
-        const angle2 = Math.acos((dist_sq + r2_sq - r1_sq) / (2 * dist * r2));
-        return r1_sq * angle1 + r2_sq * angle2 - 0.5 * Math.sqrt((-dist + r1 + r2) * (dist + r1 - r2) * (dist - r1 + r2) * (dist + r1 + r2));
-      }
-
-      function computeFlux(angle_rad) {
-        const { y, z } = getPlanetPosition(angle_rad, systemParams.planet.semiMajorAxis_AU);
-        const projectedDist_AU = Math.hypot(y, z);
-        const starRadius_m = systemParams.star.radius_R_sun * R_SUN;
-        const planetRadius_m = systemParams.planet.radius_R_earth * R_EARTH;
-        const projectedDist_m = projectedDist_AU * AU;
-        const overlapArea_m2 = circleOverlapArea(starRadius_m, planetRadius_m, projectedDist_m);
-        const starArea_m2 = Math.PI * starRadius_m * starRadius_m;
-        return 1 - overlapArea_m2 / starArea_m2;
-      }
-
-      function analyzeAndDisplayResults() {
-        if (fluxData.length === 0) {
-          resultsDiv.innerHTML = "Esperando datos...";
-          return;
+    <style>
+        /* --- BUTTON STYLES --- */
+        .btn-container {
+            display: flex;
+            gap: 0.75rem; /* 12px */
         }
 
-        const minFlux = Math.min(...fluxData);
-        const transitDepth = 1 - minFlux;
-        const starRadius_m = systemParams.star.radius_R_sun * R_SUN;
-        const estimatedPlanetRadius_m = Math.sqrt(transitDepth) * starRadius_m;
-        const estimatedPlanetRadius_R_earth = estimatedPlanetRadius_m / R_EARTH;
+        .btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem; /* 8px */
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease-in-out,
+                transform 0.1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-        let planetType;
-        estimatedPlanetRadius_R_earth < 1.5 ? planetType = "Rocoso (Terrestre)" :
-        estimatedPlanetRadius_R_earth < 4 ? planetType = "Gaseoso (Neptuniano)" :
-        planetType = "Gigante Gaseoso (Joviano)";
+        .btn:active {
+            transform: scale(0.98);
+        }
 
-        const semiMajorAxis_m = systemParams.planet.semiMajorAxis_AU * AU;
-        const equilibriumTemp_K = T_SUN * Math.sqrt(starRadius_m / (2 * semiMajorAxis_m)) * Math.pow(1 - 0.3, 0.25);
+        /* Primary button style (Play/Pause) */
+        .btn-primary {
+            background-color: #6366f1; /* Indigo 500 */
+            color: white;
+        }
 
-        // Calcular densidad relativa para la quinta característica
-        const planetVolume = (4/3) * Math.PI * Math.pow(systemParams.planet.radius_R_earth * R_EARTH, 3);
-        const planetMass = systemParams.planet.radius_R_earth * M_EARTH; // Estimación simplificada
-        const density = planetMass / planetVolume;
-        const normalizedDensity = density / 5514; // Densidad de la Tierra
+        .btn-primary:hover {
+            background-color: #4f46e5; /* Indigo 600 */
+        }
 
-        // Guardar datos para la API
-        currentPlanetData = {
-          prad: Math.max(0.1, parseFloat(estimatedPlanetRadius_R_earth.toFixed(2))),
-          period: Math.max(1, systemParams.planet.period_days),
-          teq: Math.max(100, Math.min(5000, parseFloat(equilibriumTemp_K.toFixed(0)))),
-          depth: Math.max(0.00001, Math.min(0.1, parseFloat(transitDepth.toFixed(6)))),
-          additional_feature: parseFloat(normalizedDensity.toFixed(3))
-        };
+        /* Secondary button style (Reset) */
+        .btn-secondary {
+            background-color: rgba(
+                75,
+                85,
+                99,
+                0.5
+            ); /* Gray 600 with transparency */
+            color: #d1d5db; /* Gray 300 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-        resultsDiv.innerHTML = `
-          <strong>Radio estimado:</strong> ${estimatedPlanetRadius_R_earth.toFixed(2)} R⊕<br>
-          <strong>Tipo:</strong> ${planetType}<br>
-          <strong>Profundidad:</strong> ${(transitDepth * 100).toFixed(4)} %<br>
-          <strong>Temp. Equilibrio:</strong> ${equilibriumTemp_K.toFixed(0)} K<br>
-          <strong>Densidad relativa:</strong> ${normalizedDensity.toFixed(2)} (Tierra=1.0)
+        .btn-secondary:hover {
+            background-color: rgba(
+                107,
+                114,
+                128,
+                0.5
+            ); /* Gray 500 with transparency */
+        }
+
+        /* Styles for the API section */
+        .api-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .prediction-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #6366f1;
+        }
+
+        .prediction-high {
+            border-left-color: #10b981;
+        }
+
+        .prediction-medium {
+            border-left-color: #f59e0b;
+        }
+
+        .prediction-low {
+            border-left-color: #ef4444;
+        }
+
+        .probability-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                #ef4444,
+                #f59e0b,
+                #10b981
+            );
+            transition: width 0.5s ease;
+        }
+
+        .api-button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .api-button:hover {
+            background: #4f46e5;
+        }
+
+        .api-button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online {
+            background: #10b981;
+        }
+
+        .status-offline {
+            background: #ef4444;
+        }
+
+        .test-button {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .test-button:hover {
+            background: #7c3aed;
+        }
+
+        /* General lab styles (no changes) */
+        .lab-page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .lab-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+        .lab-header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+        }
+        .lab-header p {
+            max-width: 700px;
+            color: #9ca3af;
+            margin: 0 auto 1.5rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+        .lab-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            flex-grow: 1;
+        }
+        @media (max-width: 960px) {
+            .lab-page {
+                padding: 1rem;
+            }
+            .lab-grid {
+                grid-template-columns: 1fr;
+            }
+            .ui-panel {
+                order: -1;
+            }
+        }
+        .simulation-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 0;
+        }
+        .canvas-container {
+            position: relative;
+            background: #071025;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        #view {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+        #plot {
+            width: 100%;
+            aspect-ratio: 3 / 1;
+        }
+        .ui-panel {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: fit-content;
+        }
+        .ui-panel fieldset {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .ui-panel legend {
+            padding: 0 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+        }
+        .control-row label {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            grid-column: 1 / -1;
+            margin-top: 0.25rem;
+            background: transparent;
+        }
+        input[type="range"]:focus {
+            outline: 0;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            margin-top: -6px;
+            border: 2px solid #e0e7ff;
+        }
+        #results {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            border-left: 3px solid #6366f1;
+        }
+        .lab-footer {
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+            padding-top: 2rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        a.back-btn {
+            text-decoration: none;
+        }
+        .description-text {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            text-align: center;
+            padding: 0 1rem 0.5rem;
+        }
+    </style>
+
+    <div class="lab-page">
+        <header class="lab-header">
+            <h1>Exoplanetary Transit Simulator</h1>
+            <p>
+                An interactive tool to visualize the transit method, a
+                key technique for detecting planets outside our solar
+                system.
+            </p>
+            <a href="/" class="back-btn">Back to Main Menu</a>
+        </header>
+
+        <main class="lab-grid">
+            <div class="simulation-wrapper">
+                <div class="canvas-container">
+                    <canvas id="view"></canvas>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="plot"></canvas>
+                </div>
+            </div>
+
+            <aside class="ui-panel">
+                <div class="btn-container">
+                    <button id="playBtn" class="btn btn-primary"
+                        >▶️ Play</button
+                    >
+                    <button id="resetBtn" class="btn btn-secondary"
+                        >↺ Reset</button
+                    >
+                </div>
+
+                <fieldset>
+                    <legend>Simulation</legend>
+                    <div class="control-row">
+                        <label for="speedSlider"
+                            >Speed (days/second)</label
+                        >
+                        <span id="speedVal">50</span>
+                    </div>
+                    <input
+                        id="speedSlider"
+                        type="range"
+                        min="1"
+                        max="500"
+                        step="1"
+                        value="50"
+                    />
+                </fieldset>
+
+                <fieldset>
+                    <legend>Planet</legend>
+                    <div class="control-row">
+                        <label for="radiusSlider">Radius (R⊕)</label
+                        ><span id="radiusVal">1</span>
+                    </div>
+                    <input
+                        id="radiusSlider"
+                        type="range"
+                        min="0.1"
+                        max="20"
+                        step="0.1"
+                        value="1"
+                    />
+                    <div class="control-row">
+                        <label for="periodSlider">Period (days)</label
+                        ><span id="periodVal">365</span>
+                    </div>
+                    <input
+                        id="periodSlider"
+                        type="range"
+                        min="10"
+                        max="2000"
+                        value="365"
+                    />
+                    <div class="control-row">
+                        <label for="semiMajorAxisSlider"
+                            >Semi-Major Axis (AU)</label
+                        ><span id="semiMajorAxisVal">1</span>
+                    </div>
+                    <input
+                        id="semiMajorAxisSlider"
+                        type="range"
+                        min="0.1"
+                        max="5"
+                        step="0.01"
+                        value="1"
+                    />
+                    <div class="control-row">
+                        <label for="inclinationSlider"
+                            >Inclination (°)</label
+                        ><span id="inclinationVal">90</span>
+                    </div>
+                    <input
+                        id="inclinationSlider"
+                        type="range"
+                        min="80"
+                        max="90"
+                        step="0.1"
+                        value="90"
+                    />
+                </fieldset>
+
+                <fieldset>
+                    <legend>Central Star</legend>
+                    <div class="control-row">
+                        <label for="starRadiusSlider"
+                            >Stellar Radius (R☉)</label
+                        ><span id="starRadiusVal">1</span>
+                    </div>
+                    <input
+                        id="starRadiusSlider"
+                        type="range"
+                        min="0.5"
+                        max="2"
+                        step="0.01"
+                        value="1"
+                    />
+                </fieldset>
+
+                <!-- AI Prediction Section -->
+                <div class="api-section">
+                    <h3
+                        style="margin: 0 0 1rem 0; color: #9ca3af; font-size: 1rem;"
+                    >
+                        <span
+                            id="apiStatus"
+                            class="status-indicator status-offline"
+                        ></span>
+                        AI Prediction
+                    </h3>
+
+                    <button
+                        id="predictBtn"
+                        class="api-button"
+                        disabled
+                    >
+                        🔮 Analyze with AI
+                    </button>
+
+                    <button id="testBtn" class="test-button">
+                        🧪 Test with sample data
+                    </button>
+
+                    <div
+                        id="predictionResult"
+                        class="prediction-result"
+                        style="display: none;"
+                    >
+                        <h4
+                            style="margin: 0 0 0.5rem 0; color: #e5e7eb;"
+                        >
+                            Analysis Result
+                        </h4>
+
+                        <div class="probability-bar">
+                            <div
+                                id="probabilityFill"
+                                class="probability-fill"
+                                style="width: 0%"
+                            >
+                            </div>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #9ca3af;"
+                        >
+                            <span>0%</span>
+                            <span id="probabilityText">0%</span>
+                            <span>100%</span>
+                        </div>
+
+                        <div
+                            id="predictionDetails"
+                            style="margin-top: 0.5rem;"
+                        >
+                            <!-- Details will be filled dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <p class="description-text">
+                    The graph shows the relative brightness and
+                    detected transits.
+                </p>
+                <div id="results">Waiting for data...</div>
+            </aside>
+        </main>
+
+        <footer class="lab-footer">
+            Interactive Space Adventure Laboratory - With Predictive
+            AI
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const AU = 1.496e11;
+            const R_SUN = 6.957e8;
+            const R_EARTH = 6.371e6;
+            const T_SUN = 5778;
+            const M_EARTH = 5.972e24;
+
+            const viewCanvas = document.getElementById("view");
+            const plotCanvas = document.getElementById("plot");
+            const viewCtx = viewCanvas.getContext("2d");
+            const plotCtx = plotCanvas.getContext("2d");
+            const resultsDiv = document.getElementById("results");
+            const playBtn = document.getElementById("playBtn");
+            const resetBtn = document.getElementById("resetBtn");
+
+            const sliders = {
+                speed: document.getElementById("speedSlider"),
+                planetRadius: document.getElementById("radiusSlider"),
+                period: document.getElementById("periodSlider"),
+                semiMajorAxis: document.getElementById(
+                    "semiMajorAxisSlider",
+                ),
+                inclination: document.getElementById(
+                    "inclinationSlider",
+                ),
+                starRadius: document.getElementById(
+                    "starRadiusSlider",
+                ),
+            };
+            const valueSpans = {
+                speed: document.getElementById("speedVal"),
+                planetRadius: document.getElementById("radiusVal"),
+                period: document.getElementById("periodVal"),
+                semiMajorAxis: document.getElementById(
+                    "semiMajorAxisVal",
+                ),
+                inclination:
+                    document.getElementById("inclinationVal"),
+                starRadius: document.getElementById("starRadiusVal"),
+            };
+
+            // We save the default values to use them in the reset function.
+            const defaultValues = {
+                speed: 50,
+                radius: 1,
+                period: 365,
+                semiMajorAxis: 1,
+                inclination: 90,
+                starRadius: 1,
+            };
+
+            let isPlaying = false;
+            let orbitalAngle_rad = 0;
+            let lastTimestamp = 0;
+            let fluxData = [];
+            const maxFluxPoints = 800;
+            const systemParams = {
+                simulationSpeed: 50,
+                planet: {
+                    radius_R_earth: 1,
+                    period_days: 365,
+                    semiMajorAxis_AU: 1,
+                    color: "#4ec9ff",
+                },
+                star: { radius_R_sun: 1 },
+                inclination_rad: 90 * (Math.PI / 180),
+            };
+
+            // API Variables
+            const API_URL = "http://localhost:8000";
+            let apiReady = false;
+            let expectedFeatures = 5;
+            let currentPlanetData = null;
+
+            // --- SIMULATION FUNCTIONS ---
+            function getPlanetPosition(angle_rad, semiMajorAxis_AU) {
+                const x = semiMajorAxis_AU * Math.cos(angle_rad);
+                const y =
+                    semiMajorAxis_AU *
+                    Math.sin(angle_rad) *
+                    Math.cos(systemParams.inclination_rad);
+                const z =
+                    semiMajorAxis_AU *
+                    Math.sin(angle_rad) *
+                    Math.sin(systemParams.inclination_rad);
+                return { x, y, z };
+            }
+
+            function circleOverlapArea(r1, r2, dist) {
+                if (dist >= r1 + r2) return 0;
+                if (dist <= Math.abs(r1 - r2))
+                    return Math.PI * Math.min(r1, r2) ** 2;
+                const r1_sq = r1 * r1;
+                const r2_sq = r2 * r2;
+                const dist_sq = dist * dist;
+                const angle1 = Math.acos(
+                    (dist_sq + r1_sq - r2_sq) / (2 * dist * r1),
+                );
+                const angle2 = Math.acos(
+                    (dist_sq + r2_sq - r1_sq) / (2 * dist * r2),
+                );
+                return (
+                    r1_sq * angle1 +
+                    r2_sq * angle2 -
+                    0.5 *
+                        Math.sqrt(
+                            (-dist + r1 + r2) *
+                                (dist + r1 - r2) *
+                                (dist - r1 + r2) *
+                                (dist + r1 + r2),
+                        )
+                );
+            }
+
+            function computeFlux(angle_rad) {
+                const { y, z } = getPlanetPosition(
+                    angle_rad,
+                    systemParams.planet.semiMajorAxis_AU,
+                );
+                const projectedDist_AU = Math.hypot(y, z);
+                const starRadius_m =
+                    systemParams.star.radius_R_sun * R_SUN;
+                const planetRadius_m =
+                    systemParams.planet.radius_R_earth * R_EARTH;
+                const projectedDist_m = projectedDist_AU * AU;
+                const overlapArea_m2 = circleOverlapArea(
+                    starRadius_m,
+                    planetRadius_m,
+                    projectedDist_m,
+                );
+                const starArea_m2 =
+                    Math.PI * starRadius_m * starRadius_m;
+                return 1 - overlapArea_m2 / starArea_m2;
+            }
+
+            function analyzeAndDisplayResults() {
+                if (fluxData.length === 0) {
+                    resultsDiv.innerHTML = "Waiting for data...";
+                    return;
+                }
+
+                const minFlux = Math.min(...fluxData);
+                const transitDepth = 1 - minFlux;
+                const starRadius_m =
+                    systemParams.star.radius_R_sun * R_SUN;
+                const estimatedPlanetRadius_m =
+                    Math.sqrt(transitDepth) * starRadius_m;
+                const estimatedPlanetRadius_R_earth =
+                    estimatedPlanetRadius_m / R_EARTH;
+
+                let planetType;
+                estimatedPlanetRadius_R_earth < 1.5
+                    ? (planetType = "Rocky (Terrestrial)")
+                    : estimatedPlanetRadius_R_earth < 4
+                      ? (planetType = "Gaseous (Neptunian)")
+                      : (planetType = "Gas Giant (Jovian)");
+
+                const semiMajorAxis_m =
+                    systemParams.planet.semiMajorAxis_AU * AU;
+                const equilibriumTemp_K =
+                    T_SUN *
+                    Math.sqrt(starRadius_m / (2 * semiMajorAxis_m)) *
+                    Math.pow(1 - 0.3, 0.25);
+
+                // Calculate relative density for the fifth feature
+                const planetVolume =
+                    (4 / 3) *
+                    Math.PI *
+                    Math.pow(
+                        systemParams.planet.radius_R_earth * R_EARTH,
+                        3,
+                    );
+                const planetMass =
+                    systemParams.planet.radius_R_earth * M_EARTH; // Simplified estimation
+                const density = planetMass / planetVolume;
+                const normalizedDensity = density / 5514; // Earth's density
+
+                // Save data for the API
+                currentPlanetData = {
+                    prad: Math.max(
+                        0.1,
+                        parseFloat(
+                            estimatedPlanetRadius_R_earth.toFixed(2),
+                        ),
+                    ),
+                    period: Math.max(
+                        1,
+                        systemParams.planet.period_days,
+                    ),
+                    teq: Math.max(
+                        100,
+                        Math.min(
+                            5000,
+                            parseFloat(equilibriumTemp_K.toFixed(0)),
+                        ),
+                    ),
+                    depth: Math.max(
+                        0.00001,
+                        Math.min(
+                            0.1,
+                            parseFloat(transitDepth.toFixed(6)),
+                        ),
+                    ),
+                    additional_feature: parseFloat(
+                        normalizedDensity.toFixed(3),
+                    ),
+                };
+
+                resultsDiv.innerHTML = `
+          <strong>Estimated Radius:</strong> ${estimatedPlanetRadius_R_earth.toFixed(2)} R⊕<br>
+          <strong>Type:</strong> ${planetType}<br>
+          <strong>Depth:</strong> ${(transitDepth * 100).toFixed(4)} %<br>
+          <strong>Equilibrium Temp:</strong> ${equilibriumTemp_K.toFixed(0)} K<br>
+          <strong>Relative density:</strong> ${normalizedDensity.toFixed(2)} (Earth=1.0)
         `;
-      }
-
-      function drawPlot() {
-        plotCtx.clearRect(0, 0, plotCanvas.width, plotCanvas.height);
-        if (fluxData.length < 2) return;
-        
-        plotCtx.strokeStyle = "rgba(167, 139, 250, 1)";
-        plotCtx.lineWidth = 2;
-        
-        const w = plotCanvas.width;
-        const h = plotCanvas.height;
-        const numPoints = fluxData.length;
-        const minFlux = Math.min(...fluxData);
-        const fluxRange = 1 - minFlux;
-        const yMin = minFlux - 0.1 * fluxRange;
-        const yMax = 1 + 0.1 * fluxRange;
-        
-        plotCtx.beginPath();
-        for (let i = 0; i < numPoints; i++) {
-          const x = i / (maxFluxPoints - 1) * w;
-          const y = h - (fluxData[i] - yMin) / (yMax - yMin) * h;
-          i === 0 ? plotCtx.moveTo(x, y) : plotCtx.lineTo(x, y);
-        }
-        plotCtx.stroke();
-      }
-
-      function drawView() {
-        viewCtx.clearRect(0, 0, viewCanvas.width, viewCanvas.height);
-        
-        const centerX = viewCanvas.width / 2;
-        const centerY = viewCanvas.height / 2;
-        const scale = Math.min(viewCanvas.width, viewCanvas.height) / (2.5 * 2);
-        const starRadius_px = Math.max(10, scale * 0.2 * systemParams.star.radius_R_sun);
-        
-        // Dibujar estrella con gradiente
-        const gradient = viewCtx.createRadialGradient(centerX, centerY, starRadius_px * 0.1, centerX, centerY, starRadius_px);
-        gradient.addColorStop(0, "#fff");
-        gradient.addColorStop(0.8, "#ffd28f");
-        gradient.addColorStop(1, "#ffad57");
-        viewCtx.fillStyle = gradient;
-        viewCtx.beginPath();
-        viewCtx.arc(centerX, centerY, starRadius_px, 0, 2 * Math.PI);
-        viewCtx.fill();
-        
-        // Dibujar órbita
-        const orbitRadiusX_px = systemParams.planet.semiMajorAxis_AU * scale;
-        const orbitRadiusY_px = orbitRadiusX_px * Math.cos(systemParams.inclination_rad);
-        
-        viewCtx.strokeStyle = "rgba(255, 255, 255, 0.15)";
-        viewCtx.setLineDash([5, 10]);
-        viewCtx.beginPath();
-        viewCtx.ellipse(centerX, centerY, orbitRadiusX_px, orbitRadiusY_px, 0, 0, 2 * Math.PI);
-        viewCtx.stroke();
-        viewCtx.setLineDash([]);
-        
-        // Dibujar planeta
-        const planetX_px = centerX + orbitRadiusX_px * Math.cos(orbitalAngle_rad);
-        const planetY_px = centerY + orbitRadiusY_px * Math.sin(orbitalAngle_rad);
-        const planetRadius_px = Math.max(2, starRadius_px * (systemParams.planet.radius_R_earth * R_EARTH) / (systemParams.star.radius_R_sun * R_SUN));
-        
-        viewCtx.fillStyle = systemParams.planet.color;
-        viewCtx.beginPath();
-        viewCtx.arc(planetX_px, planetY_px, planetRadius_px, 0, 2 * Math.PI);
-        viewCtx.fill();
-      }
-      
-      function animationLoop(currentTimestamp) {
-        if (lastTimestamp === 0) lastTimestamp = currentTimestamp;
-        const deltaTime_s = (currentTimestamp - lastTimestamp) / 1000;
-        lastTimestamp = currentTimestamp;
-        
-        if (isPlaying) {
-          const elapsed_days = deltaTime_s * systemParams.simulationSpeed;
-          const period_days = systemParams.planet.period_days;
-          if (period_days > 0) orbitalAngle_rad += (elapsed_days / period_days) * 2 * Math.PI;
-          if (orbitalAngle_rad >= 2 * Math.PI) orbitalAngle_rad -= 2 * Math.PI;
-          fluxData.push(computeFlux(orbitalAngle_rad));
-          if (fluxData.length > maxFluxPoints) fluxData.shift();
-        }
-        
-        drawView();
-        drawPlot();
-        analyzeAndDisplayResults();
-        requestAnimationFrame(animationLoop);
-      }
-      
-      function updateFromUI() {
-        systemParams.simulationSpeed = Number(sliders.speed.value);
-        systemParams.planet.radius_R_earth = Number(sliders.planetRadius.value);
-        systemParams.planet.period_days = Number(sliders.period.value);
-        systemParams.planet.semiMajorAxis_AU = Number(sliders.semiMajorAxis.value);
-        systemParams.star.radius_R_sun = Number(sliders.starRadius.value);
-        systemParams.inclination_rad = Number(sliders.inclination.value) * (Math.PI / 180);
-        
-        valueSpans.speed.textContent = sliders.speed.value;
-        valueSpans.planetRadius.textContent = sliders.planetRadius.value;
-        valueSpans.period.textContent = sliders.period.value;
-        valueSpans.semiMajorAxis.textContent = sliders.semiMajorAxis.value;
-        valueSpans.inclination.textContent = sliders.inclination.value;
-        valueSpans.starRadius.textContent = sliders.starRadius.value;
-      }
-      
-      function resizeCanvases() {
-        [viewCanvas, plotCanvas].forEach(canvas => {
-          canvas.width = canvas.clientWidth;
-          canvas.height = canvas.clientHeight;
-        });
-      }
-
-      // --- FUNCIONES DE LA API ---
-      async function checkAPIStatus() {
-        try {
-          const response = await fetch(`${API_URL}/health`);
-          const data = await response.json();
-          
-          apiReady = data.model_loaded;
-          expectedFeatures = data.expected_features || 5;
-          
-          const statusIndicator = document.getElementById('apiStatus');
-          const predictBtn = document.getElementById('predictBtn');
-          
-          if (apiReady) {
-            statusIndicator.className = 'status-indicator status-online';
-            predictBtn.disabled = false;
-            predictBtn.textContent = '🔮 Analizar con IA';
-            console.log(`✅ API conectada - Modelo espera ${expectedFeatures} características`);
-          } else {
-            statusIndicator.className = 'status-indicator status-offline';
-            predictBtn.disabled = true;
-            predictBtn.textContent = '⏳ Modelo no disponible';
-          }
-        } catch (error) {
-          console.error('❌ No se pudo conectar con la API:', error);
-          document.getElementById('apiStatus').className = 'status-indicator status-offline';
-          document.getElementById('predictBtn').disabled = true;
-          document.getElementById('predictBtn').textContent = '🚫 API no disponible';
-        }
-      }
-
-      async function predictExoplanet() {
-        if (!apiReady || !currentPlanetData) {
-          alert('La API no está disponible o no hay datos del planeta');
-          return;
-        }
-        
-        const predictBtn = document.getElementById('predictBtn');
-        const resultDiv = document.getElementById('predictionResult');
-        const probabilityFill = document.getElementById('probabilityFill');
-        const probabilityText = document.getElementById('probabilityText');
-        const predictionDetails = document.getElementById('predictionDetails');
-        
-        predictBtn.classList.add('loading');
-        predictBtn.textContent = '⏳ Analizando...';
-        resultDiv.style.display = 'block';
-        predictionDetails.innerHTML = '<p style="color: #9ca3af; text-align: center;">Analizando datos...</p>';
-        probabilityFill.style.width = '0%';
-        probabilityText.textContent = '0%';
-        
-        try {
-          console.log('📤 Enviando a la API:', currentPlanetData);
-          
-          const response = await fetch(`${API_URL}/predict`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(currentPlanetData)
-          });
-          
-          console.log('📥 Respuesta de la API:', response.status, response.statusText);
-          
-          if (!response.ok) {
-            let errorDetail = `Error HTTP: ${response.status}`;
-            try {
-              const errorData = await response.json();
-              errorDetail += ` - ${errorData.detail || 'Sin detalles'}`;
-            } catch (e) {
-              errorDetail += ' - No se pudo obtener detalles del error';
             }
-            throw new Error(errorDetail);
-          }
-          
-          const result = await response.json();
-          console.log('✅ Resultado de predicción:', result);
-          
-          // ANIMACIÓN CORREGIDA
-          const probability = result.probability * 100;
-          let width = 0;
-          
-          function animateProbability() {
-            if (width < probability) {
-              width += 0.8;
-              probabilityFill.style.width = `${width}%`;
-              probabilityText.textContent = `${Math.round(width)}%`;
-              requestAnimationFrame(animateProbability);
-            } else {
-              probabilityFill.style.width = `${probability}%`;
-              probabilityText.textContent = `${Math.round(probability)}%`;
+
+            function drawPlot() {
+                plotCtx.clearRect(
+                    0,
+                    0,
+                    plotCanvas.width,
+                    plotCanvas.height,
+                );
+                if (fluxData.length < 2) return;
+
+                plotCtx.strokeStyle = "rgba(167, 139, 250, 1)";
+                plotCtx.lineWidth = 2;
+
+                const w = plotCanvas.width;
+                const h = plotCanvas.height;
+                const numPoints = fluxData.length;
+                const minFlux = Math.min(...fluxData);
+                const fluxRange = 1 - minFlux;
+                const yMin = minFlux - 0.1 * fluxRange;
+                const yMax = 1 + 0.1 * fluxRange;
+
+                plotCtx.beginPath();
+                for (let i = 0; i < numPoints; i++) {
+                    const x = (i / (maxFluxPoints - 1)) * w;
+                    const y =
+                        h -
+                        ((fluxData[i] - yMin) / (yMax - yMin)) * h;
+                    i === 0
+                        ? plotCtx.moveTo(x, y)
+                        : plotCtx.lineTo(x, y);
+                }
+                plotCtx.stroke();
             }
-          }
-          
-          animateProbability();
-          
-          let confidenceClass = 'prediction-low';
-          if (result.confidence.includes('HIGH')) {
-            confidenceClass = 'prediction-high';
-          } else if (result.confidence.includes('MEDIUM')) {
-            confidenceClass = 'prediction-medium';
-          }
-          
-          resultDiv.className = `prediction-result ${confidenceClass}`;
-          
-          predictionDetails.innerHTML = `
+
+            function drawView() {
+                viewCtx.clearRect(
+                    0,
+                    0,
+                    viewCanvas.width,
+                    viewCanvas.height,
+                );
+
+                const centerX = viewCanvas.width / 2;
+                const centerY = viewCanvas.height / 2;
+                const scale =
+                    Math.min(viewCanvas.width, viewCanvas.height) /
+                    (2.5 * 2);
+                const starRadius_px = Math.max(
+                    10,
+                    scale * 0.2 * systemParams.star.radius_R_sun,
+                );
+
+                // Draw star with gradient
+                const gradient = viewCtx.createRadialGradient(
+                    centerX,
+                    centerY,
+                    starRadius_px * 0.1,
+                    centerX,
+                    centerY,
+                    starRadius_px,
+                );
+                gradient.addColorStop(0, "#fff");
+                gradient.addColorStop(0.8, "#ffd28f");
+                gradient.addColorStop(1, "#ffad57");
+                viewCtx.fillStyle = gradient;
+                viewCtx.beginPath();
+                viewCtx.arc(
+                    centerX,
+                    centerY,
+                    starRadius_px,
+                    0,
+                    2 * Math.PI,
+                );
+                viewCtx.fill();
+
+                // Draw orbit
+                const orbitRadiusX_px =
+                    systemParams.planet.semiMajorAxis_AU * scale;
+                const orbitRadiusY_px =
+                    orbitRadiusX_px *
+                    Math.cos(systemParams.inclination_rad);
+
+                viewCtx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+                viewCtx.setLineDash([5, 10]);
+                viewCtx.beginPath();
+                viewCtx.ellipse(
+                    centerX,
+                    centerY,
+                    orbitRadiusX_px,
+                    orbitRadiusY_px,
+                    0,
+                    0,
+                    2 * Math.PI,
+                );
+                viewCtx.stroke();
+                viewCtx.setLineDash([]);
+
+                // Draw planet
+                const planetX_px =
+                    centerX +
+                    orbitRadiusX_px * Math.cos(orbitalAngle_rad);
+                const planetY_px =
+                    centerY +
+                    orbitRadiusY_px * Math.sin(orbitalAngle_rad);
+                const planetRadius_px = Math.max(
+                    2,
+                    (starRadius_px *
+                        (systemParams.planet.radius_R_earth *
+                            R_EARTH)) /
+                        (systemParams.star.radius_R_sun * R_SUN),
+                );
+
+                viewCtx.fillStyle = systemParams.planet.color;
+                viewCtx.beginPath();
+                viewCtx.arc(
+                    planetX_px,
+                    planetY_px,
+                    planetRadius_px,
+                    0,
+                    2 * Math.PI,
+                );
+                viewCtx.fill();
+            }
+
+            function animationLoop(currentTimestamp) {
+                if (lastTimestamp === 0)
+                    lastTimestamp = currentTimestamp;
+                const deltaTime_s =
+                    (currentTimestamp - lastTimestamp) / 1000;
+                lastTimestamp = currentTimestamp;
+
+                if (isPlaying) {
+                    const elapsed_days =
+                        deltaTime_s * systemParams.simulationSpeed;
+                    const period_days =
+                        systemParams.planet.period_days;
+                    if (period_days > 0)
+                        orbitalAngle_rad +=
+                            (elapsed_days / period_days) *
+                            2 *
+                            Math.PI;
+                    if (orbitalAngle_rad >= 2 * Math.PI)
+                        orbitalAngle_rad -= 2 * Math.PI;
+                    fluxData.push(computeFlux(orbitalAngle_rad));
+                    if (fluxData.length > maxFluxPoints)
+                        fluxData.shift();
+                }
+
+                drawView();
+                drawPlot();
+                analyzeAndDisplayResults();
+                requestAnimationFrame(animationLoop);
+            }
+
+            function updateFromUI() {
+                systemParams.simulationSpeed = Number(
+                    sliders.speed.value,
+                );
+                systemParams.planet.radius_R_earth = Number(
+                    sliders.planetRadius.value,
+                );
+                systemParams.planet.period_days = Number(
+                    sliders.period.value,
+                );
+                systemParams.planet.semiMajorAxis_AU = Number(
+                    sliders.semiMajorAxis.value,
+                );
+                systemParams.star.radius_R_sun = Number(
+                    sliders.starRadius.value,
+                );
+                systemParams.inclination_rad =
+                    Number(sliders.inclination.value) *
+                    (Math.PI / 180);
+
+                valueSpans.speed.textContent = sliders.speed.value;
+                valueSpans.planetRadius.textContent =
+                    sliders.planetRadius.value;
+                valueSpans.period.textContent = sliders.period.value;
+                valueSpans.semiMajorAxis.textContent =
+                    sliders.semiMajorAxis.value;
+                valueSpans.inclination.textContent =
+                    sliders.inclination.value;
+                valueSpans.starRadius.textContent =
+                    sliders.starRadius.value;
+            }
+
+            function resizeCanvases() {
+                [viewCanvas, plotCanvas].forEach((canvas) => {
+                    canvas.width = canvas.clientWidth;
+                    canvas.height = canvas.clientHeight;
+                });
+            }
+
+            // --- API FUNCTIONS ---
+            async function checkAPIStatus() {
+                try {
+                    const response = await fetch(`${API_URL}/health`);
+                    const data = await response.json();
+
+                    apiReady = data.model_loaded;
+                    expectedFeatures = data.expected_features || 5;
+
+                    const statusIndicator =
+                        document.getElementById("apiStatus");
+                    const predictBtn =
+                        document.getElementById("predictBtn");
+
+                    if (apiReady) {
+                        statusIndicator.className =
+                            "status-indicator status-online";
+                        predictBtn.disabled = false;
+                        predictBtn.textContent = "🔮 Analyze with AI";
+                        console.log(
+                            `✅ API connected - Model expects ${expectedFeatures} features`,
+                        );
+                    } else {
+                        statusIndicator.className =
+                            "status-indicator status-offline";
+                        predictBtn.disabled = true;
+                        predictBtn.textContent =
+                            "⏳ Model unavailable";
+                    }
+                } catch (error) {
+                    console.error(
+                        "❌ Could not connect to API:",
+                        error,
+                    );
+                    document.getElementById("apiStatus").className =
+                        "status-indicator status-offline";
+                    document.getElementById("predictBtn").disabled =
+                        true;
+                    document.getElementById(
+                        "predictBtn",
+                    ).textContent = "🚫 API unavailable";
+                }
+            }
+
+            async function predictExoplanet() {
+                if (!apiReady || !currentPlanetData) {
+                    alert(
+                        "API is not available or there is no planet data",
+                    );
+                    return;
+                }
+
+                const predictBtn =
+                    document.getElementById("predictBtn");
+                const resultDiv = document.getElementById(
+                    "predictionResult",
+                );
+                const probabilityFill =
+                    document.getElementById("probabilityFill");
+                const probabilityText =
+                    document.getElementById("probabilityText");
+                const predictionDetails = document.getElementById(
+                    "predictionDetails",
+                );
+
+                predictBtn.classList.add("loading");
+                predictBtn.textContent = "⏳ Analyzing...";
+                resultDiv.style.display = "block";
+                predictionDetails.innerHTML =
+                    '<p style="color: #9ca3af; text-align: center;">Analyzing data...</p>';
+                probabilityFill.style.width = "0%";
+                probabilityText.textContent = "0%";
+
+                try {
+                    console.log(
+                        "📤 Sending to API:",
+                        currentPlanetData,
+                    );
+
+                    const response = await fetch(
+                        `${API_URL}/predict`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(currentPlanetData),
+                        },
+                    );
+
+                    console.log(
+                        "📥 API Response:",
+                        response.status,
+                        response.statusText,
+                    );
+
+                    if (!response.ok) {
+                        let errorDetail = `HTTP Error: ${response.status}`;
+                        try {
+                            const errorData = await response.json();
+                            errorDetail += ` - ${errorData.detail || "No details"}`;
+                        } catch (e) {
+                            errorDetail +=
+                                " - Could not get error details";
+                        }
+                        throw new Error(errorDetail);
+                    }
+
+                    const result = await response.json();
+                    console.log("✅ Prediction result:", result);
+
+                    // CORRECTED ANIMATION
+                    const probability = result.probability * 100;
+                    let width = 0;
+
+                    function animateProbability() {
+                        if (width < probability) {
+                            width += 0.8;
+                            probabilityFill.style.width = `${width}%`;
+                            probabilityText.textContent = `${Math.round(width)}%`;
+                            requestAnimationFrame(animateProbability);
+                        } else {
+                            probabilityFill.style.width = `${probability}%`;
+                            probabilityText.textContent = `${Math.round(probability)}%`;
+                        }
+                    }
+
+                    animateProbability();
+
+                    let confidenceClass = "prediction-low";
+                    if (result.confidence.includes("HIGH")) {
+                        confidenceClass = "prediction-high";
+                    } else if (result.confidence.includes("MEDIUM")) {
+                        confidenceClass = "prediction-medium";
+                    }
+
+                    resultDiv.className = `prediction-result ${confidenceClass}`;
+
+                    predictionDetails.innerHTML = `
             <div style="display: grid; gap: 0.5rem; font-size: 0.85rem;">
               <div style="display: flex; justify-content: space-between;">
-                <span style="color: #9ca3af;">Confianza:</span>
+                <span style="color: #9ca3af;">Confidence:</span>
                 <span style="color: #e5e7eb; font-weight: 600;">${result.confidence}</span>
               </div>
               <div style="display: flex; justify-content: space-between;">
-                <span style="color: #9ca3af;">Clasificación:</span>
+                <span style="color: #9ca3af;">Classification:</span>
                 <span style="color: #e5e7eb; font-weight: 600;">${result.classification}</span>
               </div>
               <div style="display: flex; justify-content: space-between;">
-                <span style="color: #9ca3af;">Resultado:</span>
-                <span style="color: ${result.is_exoplanet ? '#10b981' : '#ef4444'}; font-weight: 600;">
-                  ${result.is_exoplanet ? '✅ POSIBLE EXOPLANETA' : '❌ FALSO POSITIVO'}
+                <span style="color: #9ca3af;">Result:</span>
+                <span style="color: ${result.is_exoplanet ? "#10b981" : "#ef4444"}; font-weight: 600;">
+                  ${result.is_exoplanet ? "✅ POSSIBLE EXOPLANET" : "❌ FALSE POSITIVE"}
                 </span>
               </div>
               <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 0.25rem;">
@@ -605,74 +1105,88 @@ const API_URL = 'http://localhost:8000';
               </div>
             </div>
           `;
-          
-        } catch (error) {
-          console.error('❌ Error completo en la predicción:', error);
-          predictionDetails.innerHTML = `
+                } catch (error) {
+                    console.error(
+                        "❌ Complete error in prediction:",
+                        error,
+                    );
+                    predictionDetails.innerHTML = `
             <p style="color: #ef4444; text-align: center;">
-              Error al conectar con la API:<br>
+              Error connecting to API:<br>
               <strong>${error.message}</strong>
             </p>
           `;
-        } finally {
-          predictBtn.classList.remove('loading');
-          predictBtn.textContent = '🔮 Re-analizar con IA';
-        }
-      }
+                } finally {
+                    predictBtn.classList.remove("loading");
+                    predictBtn.textContent = "🔮 Re-analyze with AI";
+                }
+            }
 
-      async function testWithSampleData() {
-        // Datos de prueba que deberían funcionar
-        currentPlanetData = {
-          prad: 1.5,
-          period: 365,
-          teq: 288,
-          depth: 0.001,
-          additional_feature: 1.0
-        };
-        
-        console.log('🧪 Probando con datos de muestra:', currentPlanetData);
-        await predictExoplanet();
-      }
+            async function testWithSampleData() {
+                // Test data that should work
+                currentPlanetData = {
+                    prad: 1.5,
+                    period: 365,
+                    teq: 288,
+                    depth: 0.001,
+                    additional_feature: 1.0,
+                };
 
-      // --- LISTENERS DE EVENTOS ---
-      playBtn.addEventListener('click', () => {
-        isPlaying = !isPlaying;
-        playBtn.innerHTML = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
-        if (isPlaying) lastTimestamp = performance.now();
-      });
+                console.log(
+                    "🧪 Testing with sample data:",
+                    currentPlanetData,
+                );
+                await predictExoplanet();
+            }
 
-      resetBtn.addEventListener('click', () => {
-        isPlaying = false;
-        playBtn.innerHTML = "▶️ Reproducir";
-        orbitalAngle_rad = 0;
-        fluxData = [];
+            // --- EVENT LISTENERS ---
+            playBtn.addEventListener("click", () => {
+                isPlaying = !isPlaying;
+                playBtn.innerHTML = isPlaying
+                    ? "⏸️ Pause"
+                    : "▶️ Play";
+                if (isPlaying) lastTimestamp = performance.now();
+            });
 
-        sliders.speed.value = defaultValues.speed;
-        sliders.planetRadius.value = defaultValues.radius;
-        sliders.period.value = defaultValues.period;
-        sliders.semiMajorAxis.value = defaultValues.semiMajorAxis;
-        sliders.inclination.value = defaultValues.inclination;
-        sliders.starRadius.value = defaultValues.starRadius;
-        
-        updateFromUI();
-      });
+            resetBtn.addEventListener("click", () => {
+                isPlaying = false;
+                playBtn.innerHTML = "▶️ Play";
+                orbitalAngle_rad = 0;
+                fluxData = [];
 
-      Object.values(sliders).forEach(slider => slider.addEventListener('input', updateFromUI));
-      window.addEventListener('resize', resizeCanvases);
+                sliders.speed.value = defaultValues.speed;
+                sliders.planetRadius.value = defaultValues.radius;
+                sliders.period.value = defaultValues.period;
+                sliders.semiMajorAxis.value =
+                    defaultValues.semiMajorAxis;
+                sliders.inclination.value = defaultValues.inclination;
+                sliders.starRadius.value = defaultValues.starRadius;
 
-      // Eventos para la API
-      document.getElementById('predictBtn').addEventListener('click', predictExoplanet);
-      document.getElementById('testBtn').addEventListener('click', testWithSampleData);
+                updateFromUI();
+            });
 
-      // --- INICIO ---
-      resizeCanvases();
-      updateFromUI();
-      checkAPIStatus();
-      
-      // Verificar estado de la API cada 30 segundos
-      setInterval(checkAPIStatus, 30000);
-      
-      requestAnimationFrame(animationLoop);
-    });
-  </script>
+            Object.values(sliders).forEach((slider) =>
+                slider.addEventListener("input", updateFromUI),
+            );
+            window.addEventListener("resize", resizeCanvases);
+
+            // API Events
+            document
+                .getElementById("predictBtn")
+                .addEventListener("click", predictExoplanet);
+            document
+                .getElementById("testBtn")
+                .addEventListener("click", testWithSampleData);
+
+            // --- START ---
+            resizeCanvases();
+            updateFromUI();
+            checkAPIStatus();
+
+            // Check API status every 30 seconds
+            setInterval(checkAPIStatus, 30000);
+
+            requestAnimationFrame(animationLoop);
+        });
+    </script>
 </Layout>
