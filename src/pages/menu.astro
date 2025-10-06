@@ -1,0 +1,130 @@
+---
+// Importación CORRECTA del Layout
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Choose Your Adventure">
+    <div class="adventure-container">
+        <header class="adventure-header">
+            <h1 style="color: #fff;">Choose Your Adventure</h1>
+            <p class="subtitle" style="color: #D1D5DB;">Embark on an exoplanet exploration journey. Select your preferred mode to begin your cosmic adventure.</p>
+        </header>
+
+        <div class="modes">
+            <div class="mode-card">
+                <div class="image-wrapper learning">
+                    </div>
+                <div class="card-content">
+                    <h2>Learning Mode</h2>
+                    <p>Structured lessons and quizzes to master exoplanet science.</p>
+                    <a href="/quiz" class="button">Start Learning</a>
+                </div>
+            </div>
+
+            <div class="mode-card">
+                <div class="image-wrapper lab">
+                    </div>
+                <div class="card-content">
+                    <h2>Laboratory Mode</h2>
+                    <p>Interactive simulations and experiments to explore exoplanets.</p>
+                    <a href="/lab" class="button">Enter Lab</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    /* El contenedor 'modes' para alinear las tarjetas */
+    .modes {
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: center;
+        gap: 2rem; 
+    }
+
+    /* Estilo de cada Tarjeta */
+    .mode-card {
+        background: #0F172A; 
+        border-radius: 1.5rem; 
+        width: 300px; 
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+
+    .mode-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+    }
+    
+    /* Wrapper de la Imagen */
+    .image-wrapper {
+        width: 100%;
+        height: 180px; 
+        border-radius: 1.5rem 1.5rem 0 0; 
+        background-size: cover;
+        background-position: center;
+        padding: 0.75rem; 
+    }
+
+    /* Placeholder Learning Mode */
+    .learning {
+        background-color: #0f172a; 
+        background-image: 
+            radial-gradient(circle at 50% 50%, #d7e4d9 45%, transparent 46%);
+        background-repeat: no-repeat;
+    }
+
+    /* Placeholder Laboratory Mode */
+    .lab {
+        background-color: #d1d8c5;
+        background-image:
+            linear-gradient(to top, #f0e2b6 60%, transparent 60%), 
+            radial-gradient(circle at 80% 20%, #f0e2b6 10%, transparent 10.1%); 
+        background-repeat: no-repeat;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; 
+        text-align: left; 
+    }
+
+    .card-content h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-content p {
+        color: #9CA3AF;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1; 
+    }
+
+    /* Estilo del botón (Sobrescribe el layout) */
+    .button {
+        display: block;
+        width: 100%;
+        background: linear-gradient(to right,#4f46e5,#6366f1);
+        color: white;
+        text-align: center;
+        padding: 0.875rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        transform: none; 
+        box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+    }
+    
+    .button:hover {
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 20px rgba(79,70,229,0.5);
+    }
+</style>

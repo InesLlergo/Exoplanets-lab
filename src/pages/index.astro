@@ -1,132 +1,132 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Exoplanet Adventure</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <main class="card">
-        <button class="translate-button">EN / ES</button>
+---
+import Layout from '../layouts/Layout.astro';
+---
 
-        <div class="image-placeholder"></div>
-        
-        <h1>
-            Embark on an <span class="highlight">Exoplanet</span><br>
-            <span class="adventure-text">Adventure</span>
-        </h1>
-        <p>
-            Discover distant worlds, learn about their unique characteristics, and unlock 
-            the mysteries of the universe. Your journey to the stars begins now!
-        </p>
-        <button>Start Exploring</button>
-    </main>
-
+<Layout title="Aventura Espacial">
     <style>
-        :root {
-            --font-main: 'Poppins', system-ui, sans-serif;
-        }
+        :root { --font-main: 'Poppins', system-ui, sans-serif; }
 
         body {
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
             margin: 0;
             font-family: var(--font-main);
-            background-color: #0d0f1a;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.3), transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(192, 132, 252, 0.15), transparent 40%);
+            background: radial-gradient(circle at center, #0f172a, #020617);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .card {
-            position: relative; 
-            background-color: rgba(17, 24, 39, 0.7);
+        section {
+            display: none; /* Oculto por defecto */
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box; 
+        }
+
+        .visible { display: flex; } /* Clase para mostrar una sección */
+
+        .menu-container, .adventure-container, .card {
+            background: rgba(17,24,39,0.7);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 1.5rem;
-            padding: 1.5rem 2rem;
-            max-width: 720px;
+            padding: 2rem 3rem;
+            max-width: 960px;
             width: 90%;
             text-align: center;
-            margin: 1rem;
         }
 
-        .translate-button {
-            position: absolute;
-            top: 1.5rem;
-            right: 2rem;
-            background-color: #1f2937;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #f9fafb;
+        }
+
+        .subtitle {
+            font-size: 1rem;
             color: #9ca3af;
-            font-family: var(--font-main);
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-
-        .translate-button:hover {
-            background-color: #374151;
-            color: #ffffff;
-        }
-
-        .image-placeholder {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background-color: rgba(31, 41, 55, 0.5);
-            border-radius: 1rem;
             margin-bottom: 2rem;
         }
 
-        .card h1 {
-            color: #f9fafb;
-            font-size: 2.25rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 1rem;
-        }
-        
-        .highlight {
-            color: #4338ca;
-            font-weight: 700;
-        }
-        
-        .adventure-text {
-            font-weight: 600;
+        .modes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
         }
 
-        .card p {
-            color: #9ca3af;
-            font-size: 0.9rem;
-            font-weight: 300;
-            line-height: 1.6;
-            margin: 0 0 2rem;
+        /* La tarjeta es ahora un enlace (<a>), se asegura que no tenga estilos de link */
+        a.mode-card {
+            text-decoration: none;
+            color: inherit;
         }
+
+        .mode-card {
+            background: rgba(31,41,55,0.7);
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            width: 280px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79,70,229,0.3);
+        }
+
+        .mode-card .image {
+            width: 100%;
+            height: 160px;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .learning { background-image: url('https://images.unsplash.com/photo-1612282415801-9b43e9432c56?fit=crop&w=600&q=60'); }
+        .lab { background-image: url('https://images.unsplash.com/photo-1614727834218-8b0b0f2cc1b0?fit=crop&w=600&q=60'); }
 
         button {
-            background-image: linear-gradient(to right, #4f46e5, #6366f1);
-            color: #ffffff;
-            border: none;
-            border-radius: 0.75rem;
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: var(--font-main);
-            cursor: pointer;
+            background: linear-gradient(to right,#4f46e5,#6366f1);
+            color:#fff;
+            border:none;
+            border-radius:.75rem;
+            padding:.8rem 1.5rem;
+            font-size:1rem;
+            font-weight:600;
+            cursor:pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+            box-shadow:0 4px 15px rgba(79,70,229,0.4);
         }
 
         button:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+            box-shadow:0 6px 20px rgba(79,70,229,0.5);
+        }
+        
+        .lang-toggle {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.5rem 1rem;
+            background: rgba(31,41,55,0.7);
+        }
+
+        .back-btn {
+            margin-top: 2rem;
+            background: linear-gradient(to right, #16a34a, #22c55e);
+            box-shadow:0 4px 15px rgba(22, 163, 74, 0.4);
+        }
+        .back-btn:hover {
+             box-shadow:0 6px 20px rgba(22, 163, 74, 0.5);
         }
 
 		
@@ -165,5 +165,55 @@
     	.feedback.wrong { background-color: rgba(220, 38, 38, 0.7); }
 
     </style>
-</body>
-</html>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+    <section id="startMenu" class="visible">
+        <div class="menu-container">
+            <button class="lang-toggle">EN/ES</button>
+            <h1 data-key="title">🚀 Bienvenido a Exoplanet lab</h1>
+            <p class="subtitle" data-key="subtitle">Prepárate para explorar y aprender sobre exoplanetas.</p>
+            <button id="startButton">Comenzar</button>
+        </div>
+    </section>
+
+    <section id="modeSelectionMenu">
+        <div class="adventure-container">
+             <h1>Elige tu Aventura</h1>
+             <p class="subtitle">Selecciona un modo para comenzar tu viaje.</p>
+             <div class="modes">
+                  <div class="mode-card">
+                      <div class="image learning"></div>
+                      <h3>Modo Aprendizaje</h3>
+                      <p>Descubre datos fascinantes sobre planetas lejanos.</p>
+                  </div>
+                  <a href="/lab" class="mode-card">
+                      <div class="image lab"></div>
+                      <h3>Laboratorio Interactivo</h3>
+                      <p>Experimenta con las condiciones de diferentes mundos.</p>
+                  </a>
+             </div>
+             <button id="backButton" class="back-btn">Regresar al Menú</button>
+        </div>
+    </section>
+
+    <script>
+        // Seleccionar los elementos del DOM
+        const startMenu = document.querySelector('#startMenu');
+        const modeSelectionMenu = document.querySelector('#modeSelectionMenu');
+        
+        const startButton = document.querySelector('#startButton');
+        const backButton = document.querySelector('#backButton');
+
+        // Evento para el botón "Comenzar"
+        startButton.addEventListener('click', () => {
+            startMenu.classList.remove('visible'); // Oculta el menú de inicio
+            modeSelectionMenu.classList.add('visible'); // Muestra el menú de selección
+        });
+
+        // Evento para el botón "Regresar"
+        backButton.addEventListener('click', () => {
+            modeSelectionMenu.classList.remove('visible'); // Oculta el menú de selección
+            startMenu.classList.add('visible'); // Muestra el menú de inicio
+        });
+    </script>
+</Layout>

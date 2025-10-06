@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aventura Espacial - Learning Menu & Quiz</title>
+<style>
+  :root { --font-main: 'Poppins', system-ui, sans-serif; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-main);
+    background: radial-gradient(circle at center, #0f172a, #020617);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  section {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .visible { display: flex; }
+
+  .menu-container, .adventure-container, .card {
+    background: rgba(17,24,39,0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1.5rem;
+    padding: 2rem 3rem;
+    max-width: 960px;
+    width: 90%;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #f9fafb;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #9ca3af;
+    margin-bottom: 2rem;
+  }
+
+  .modes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .mode-card {
+    background: rgba(31,41,55,0.7);
+    border-radius: 1.2rem;
+    padding: 1.5rem;
+    width: 280px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(79,70,229,0.3);
+  }
+
+  .mode-card .image {
+    width: 100%;
+    height: 160px;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .learning { background-image: url('https://images.unsplash.com/photo-1612282415801-9b43e9432c56?fit=crop&w=600&q=60'); }
+  .lab { background-image: url('https://images.unsplash.com/photo-1614727834218-8b0b0f2cc1b0?fit=crop&w=600&q=60'); }
+
+  button {
+    background: linear-gradient(to right,#4f46e5,#6366f1);
+    color:#fff;
+    border:none;
+    border-radius:.75rem;
+    padding:.8rem 1.5rem;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:0 4px 15px rgba(79,70,229,0.4);
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    box-shadow:0 6px 20px rgba(79,70,229,0.5);
+  }
+
+  .back-btn {
+    margin-top: 2rem;
+    background: linear-gradient(to right, #16a34a, #22c55e);
+  }
+
+  /* --- Quiz --- */
+  .card h2 { font-size: 1.25rem; margin: 1rem 0; min-height: 3rem; }
+  .options { display:flex; flex-direction:column; align-items:flex-start; gap:.75rem; margin-bottom:1.5rem; }
+  .options label { background:#1f2937; padding:.75rem 1rem; border-radius:.75rem; width:100%; color:#e5e7eb; cursor:pointer; transition: background 0.2s; }
+  .options label:hover { background:#374151; }
+  input[type="radio"] { margin-right:.75rem; accent-color:#6366f1; }
+  .feedback { margin-top:1rem; padding:.75rem 1rem; border-radius:.75rem; display:none; color:#f9fafb; text-align:left; }
+  .feedback.correct { background-color: rgba(5,150,105,0.7); }
+  .feedback.wrong { background-color: rgba(220,38,38,0.7); }
+  #score, #progress, #fun-fact { color:#fff; margin-bottom:.5rem; }
+  .lang-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(to right, #4f46e5, #6366f1);
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(79,70,229,0.4);
+}
+
+.lang-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(79,70,229,0.5);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🚀 PANTALLA INICIAL -->
+<section id="startMenu" class="visible">
+  <div class="menu-container">
+   <button class="lang-toggle">EN/ES</button>
+    <h1>🚀 Bienvenido a Aventura Espacial</h1>
+    <p class="subtitle">Prepárate para explorar y aprender sobre exoplanetas.</p>
+    <button onclick="enterMainMenu()">Comenzar</button>
+  </div>
+</section>
+
+<!-- 🪐 MENÚ PRINCIPAL DE MODOS -->
+<section id="menu">
+  <div class="menu-container">
+    <h1>Elige tu Aventura</h1>
+    <p class="subtitle">Explora y aprende sobre exoplanetas en dos modos únicos.</p>
+      <button id="lang-btn" class="lang-toggle">EN/ES</button>
+
+    <div class="modes">
+      <div class="mode-card">
+        <div class="image learning"></div>
+        <h2>Modo de Aprendizaje</h2>
+        <p>Descubre las bases teóricas y gana experiencia.</p>
+        <button onclick="startQuiz()">Comenzar Aprendizaje</button>
+      </div>
+      <div class="mode-card">
+        <div class="image lab"></div>
+        <h2>Modo Laboratorio</h2>
+        <p>Aplica tus conocimientos en simulaciones reales.</p>
+        <button onclick="enterLab()">Entrar al Laboratorio</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🌠 MODO DE APRENDIZAJE (QUIZ) -->
+<section id="quiz">
+  <main class="card">
+    <h1>Quiz de Exoplanetas 🌌</h1>
+    <p id="score">Puntaje: 0</p>
+    <button class="lang-toggle">EN/ES</button>
+    <p id="progress">Progreso (1/9)</p>
+    <h2 id="question"></h2>
+    <div class="options" id="options"></div>
+    <button class="submit">Responder</button>
+    <div class="feedback" id="feedback"></div>
+    <p id="fun-fact"></p>
+    <button class="back-btn" onclick="goBackMenu()">Regresar al Menú</button>
+  </main>
+</section>
+
+<!-- 🧪 MODO LABORATORIO -->
+
+<!-- copiar desde aquí -->
+
+<section id="lab">
+  <div class="adventure-container" style="background:none;border:none;padding:0;">
+    <h1 style="text-align:center;font-size:1.6rem;">Simulador Experto - Método de Tránsito </h1>
+    <p style="text-align:center;max-width:500px;color:#cbd5e1;margin:auto;margin-bottom:0.5rem;font-size:0.9rem;">
+      Observa cómo la luz estelar cambia cuando un planeta transita frente a su estrella. Ajusta los parámetros para explorar.
+    </p>
+    <button class="lang-toggle">EN/ES</button>
+<button class="back-btn" onclick="goBackMenu()">Regresar al Menú</button>
+
+  <footer style="margin-top:6px;font-size:0.75rem;color:#bcd;text-align:center;">
+      Simulador del método de tránsito
+
+  </footer>
+</div>
+
+    <div id="container" style="display:flex;gap:12px;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+      <div>
+        <canvas id="view" width="420" height="420" style="background:#071025;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,0.5);"></canvas>
+        <div style="display:flex;justify-content:center;margin-top:6px">
+          <canvas id="plot" width="420" height="140" style="background:#071025;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,0.5);"></canvas>
+        </div>
+      </div>
+
+      <div id="ui" style="display:flex;flex-direction:column;gap:6px;margin-left:8px;font-size:0.85rem;">
+        <div class="row" style="display:flex;gap:6px;align-items:center;justify-content:center;">
+          <button id="play" style="padding:4px 10px;font-size:0.8rem;">▶️</button>
+          <button id="reset" style="padding:4px 10px;font-size:0.8rem;">↺</button>
+        </div>
+
+        <label>Velocidad simulación: <span id="speedVal">1</span>x</label>
+        <input id="speed" type="range" min="0.1" max="10" step="0.1" value="1" style="width:150px;">
+
+        <h3 style="font-size:0.9rem;margin-top:6px;">Planeta</h3>
+        <label>Masa (M⊕): <span id="massVal">1</span></label>
+        <input id="mass" type="range" min="0.1" max="500" step="0.1" value="1" style="width:150px;">
+        <label>Periodo (días): <span id="perVal">365</span></label>
+        <input id="period" type="range" min="10" max="2000" value="365" style="width:150px;">
+        <label>Semieje (AU): <span id="aVal">1</span></label>
+        <input id="a" type="range" min="0.1" max="5" step="0.01" value="1" style="width:150px;">
+        <label>Radio (R⊕): <span id="rVal">1</span></label>
+        <input id="radius" type="range" min="0.1" max="20" step="0.1" value="1" style="width:150px;">
+        <label>Inclinación (°): <span id="inclVal">89</span></label>
+        <input id="incl" type="range" min="0" max="90" value="89" style="width:150px;">
+
+        <h3 style="font-size:0.9rem;margin-top:6px;">Estrella</h3>
+        <label>Radio (R☉): <span id="starRVal">1</span></label>
+        <input id="starR" type="range" min="0.5" max="2" step="0.01" value="1" style="width:150px;">
+
+        <div style="font-size:0.75rem;color:#cde;">La gráfica muestra el brillo total durante el tránsito.</div>
+        <div id="results" style="margin-top:6px;font-size:0.8rem;background:rgba(255,255,255,0.05);padding:6px;border-radius:6px;width:190px;"></div>
+      </div>
+    </div>
+
+    <footer style="margin-top:6px;font-size:0.75rem;color:#bcd;text-align:center;">
+      Simulador del método de tránsito
+    </footer>
+  </div>
+
+  <!-- 🔭 Script funcional -->
+  <script>
+  const view=document.getElementById('view');
+  const ctx=view.getContext('2d');
+  const plot=document.getElementById('plot');
+  const pctx=plot.getContext('2d');
+  const resDiv=document.getElementById('results');
+
+  let t=0, playing=false, speed=1;
+  let incl=89*Math.PI/180;
+  const AU=1.496e11, day=86400, R_sun=6.957e8, R_earth=6.371e6, M_earth=5.972e24, G=6.67430e-11;
+
+  let planet={color:'#4ec9ff',mass:1,period:365,a:1,r:1};
+  let times=[], fluxes=[], maxPoints=800, transits=[];
+
+  function planetPosition(theta,a){
+    const x=a*Math.cos(theta);
+    const y=a*Math.sin(theta)*Math.cos(incl);
+    const z=a*Math.sin(theta)*Math.sin(incl);
+    return {x,y,z};
+  }
+
+  function circleOverlapArea(R,r,d){
+    if(d>=R+r) return 0;
+    if(d<=Math.abs(R-r)) return Math.PI*Math.min(R,r)**2;
+    const R2=R*R,r2=r*r;
+    const a=Math.acos((d*d+R2-r2)/(2*d*R));
+    const b=Math.acos((d*d+r2-R2)/(2*d*r));
+    return R2*a+r2*b-0.5*(R2*Math.sin(2*a)+r2*Math.sin(2*b));
+  }
+
+  function computeFlux(theta){
+    const pos=planetPosition(theta,planet.a);
+    const d=Math.hypot(pos.y,pos.z);
+    const R_star=R_sun*Number(document.getElementById('starR').value);
+    const blocked=circleOverlapArea(R_star,planet.r*R_earth,d*AU);
+    return Math.max(0,1-blocked/(Math.PI*R_star*R_star));
+  }
+
+  function detectTransit(){
+    const N=fluxes.length;
+    if(N<3)return;
+    const f0=fluxes[N-3], f1=fluxes[N-2], f2=fluxes[N-1];
+    if(f1<f0 && f1<f2){
+      transits.push({time:times[N-2],flux:f1});
+      if(transits.length>50)transits.shift();
+    }
+  }
+
+  function drawPlot(){
+    pctx.clearRect(0,0,plot.width,plot.height);
+    pctx.fillStyle='rgba(6,12,22,0.6)';
+    pctx.fillRect(0,0,plot.width,plot.height);
+
+    if(!fluxes.length)return;
+    const w=plot.width-40,h=plot.height-40,N=fluxes.length;
+    const minF=Math.min(...fluxes),maxF=Math.max(...fluxes);
+    const lo=Math.max(0,minF-0.001),hi=Math.min(1,maxF+0.001);
+
+    pctx.strokeStyle='rgba(120,200,255,0.9)';
+    pctx.beginPath();
+    for(let i=0;i<N;i++){
+      const x=30+(i/(N-1))*w;
+      const y=10+(1-(fluxes[i]-lo)/(hi-lo))*h;
+      if(i===0)pctx.moveTo(x,y);else pctx.lineTo(x,y);
+    }
+    pctx.stroke();
+  }
+
+  function analyzePlanet(){
+    const fluxMin=Math.min(...fluxes)||1;
+    const R_star=R_sun*Number(document.getElementById('starR').value);
+    const estimatedRadius=Math.sqrt(1-fluxMin)*R_star/R_earth;
+    const a_m=planet.a*AU;
+    const T_s=planet.period*day;
+    const estimatedMass=(4*Math.PI**2*a_m**3)/(G*T_s**2)/M_earth; 
+
+    const transitDepth = (planet.r*R_earth / R_star)**2;
+    const T_star = 5778; // temperatura solar
+    const albedo = 0.3;
+    const T_eq = T_star * Math.sqrt(R_star/(2*a_m)) * Math.pow(1-albedo,0.25);
+
+    const v_transit = 2*Math.PI*a_m / (planet.period*day) / 1000; // km/s
+
+    resDiv.innerHTML=`
+      <div>Radio: ${estimatedRadius.toFixed(2)} R⊕</div>
+      <div>Masa: ${estimatedMass.toFixed(2)} M⊕</div>
+      <div>Vel. tránsito: ${v_transit.toFixed(2)} km/s</div>
+      <div>Temp. equilibrio: ${T_eq.toFixed(0)} K</div>
+      <div>Profundidad: ${(transitDepth*100).toFixed(2)} %</div>`;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,view.width,view.height);
+    const cx=view.width/2,cy=view.height/2;
+    const theta=(t/planet.period)*2*Math.PI;
+    const flux=computeFlux(theta);
+
+    const starScale = Number(document.getElementById('starR').value);
+    const starRadius = 40 * starScale; 
+
+    const g=ctx.createRadialGradient(cx,cy,starRadius*0.3,cx,cy,starRadius);
+    g.addColorStop(0,'#fff7c9');
+    g.addColorStop(0.6,'#ffd36b');
+    g.addColorStop(1,'#ff9e3b');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(cx,cy,starRadius,0,2*Math.PI);
+    ctx.fill();
+
+    const orbitRadius = planet.a*130 + starRadius*0.8;
+    ctx.strokeStyle='rgba(200,220,255,0.12)';
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,orbitRadius,orbitRadius*Math.cos(incl),0,0,2*Math.PI);
+    ctx.stroke();
+
+    const planetX = cx + orbitRadius * Math.cos(theta);
+    const planetY = cy + orbitRadius * Math.sin(theta) * Math.cos(incl);
+    ctx.fillStyle = planet.color;
+    ctx.beginPath();
+    ctx.arc(planetX, planetY, planet.r*3.5, 0, 2*Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle='#cfe';
+    ctx.font='12px system-ui';
+    ctx.fillText('t='+t.toFixed(1)+' d',8,16);
+    ctx.fillText('Brillo='+flux.toFixed(4),8,30);
+
+    drawPlot();
+    analyzePlanet();
+  }
+
+  function step(now){
+    if(!step.last)step.last=now;
+    const dt=(now-step.last)/1000;step.last=now;
+    if(playing){
+      t+=dt*speed;
+      const theta=(t/planet.period)*2*Math.PI;
+      const f=computeFlux(theta);
+      times.push(t);fluxes.push(f);
+      if(fluxes.length>maxPoints){times.shift();fluxes.shift();}
+      detectTransit();
+    }
+    draw();requestAnimationFrame(step);
+  }
+
+  function updateUI(){
+    incl=Number(document.getElementById('incl').value)*Math.PI/180;
+    speed=Number(document.getElementById('speed').value);
+    planet.mass=Number(document.getElementById('mass').value);
+    planet.period=Number(document.getElementById('period').value);
+    planet.a=Number(document.getElementById('a').value);
+    planet.r=Number(document.getElementById('radius').value);
+
+    document.getElementById('speedVal').textContent=speed;
+    document.getElementById('massVal').textContent=planet.mass;
+    document.getElementById('perVal').textContent=planet.period;
+    document.getElementById('aVal').textContent=planet.a;
+    document.getElementById('rVal').textContent=planet.r;
+    document.getElementById('inclVal').textContent=Math.round(incl*180/Math.PI);
+    document.getElementById('starRVal').textContent=document.getElementById('starR').value;
+
+    draw();
+  }
+
+  ['incl','speed','period','a','radius','mass','starR'].forEach(id=>document.getElementById(id).addEventListener('input',updateUI));
+  document.getElementById('play').addEventListener('click',()=>{playing=!playing;document.getElementById('play').textContent=playing?'⏸':'▶️';});
+  document.getElementById('reset').addEventListener('click',()=>{t=0;times=[];fluxes=[];transits=[];draw();});
+
+  updateUI();draw();requestAnimationFrame(step);
+  </script>
+</section>
+
+
+<!-- pd -->
+
+
+<script>
+const startMenu = document.getElementById("startMenu");
+const menu = document.getElementById("menu");
+const quizSection = document.getElementById("quiz");
+const labSection = document.getElementById("lab");
+
+function enterMainMenu() {
+  startMenu.classList.remove("visible");
+  menu.classList.add("visible");
+}
+
+function startQuiz() {
+  menu.classList.remove("visible");
+  quizSection.classList.add("visible");
+  loadQuestion(currentQuestion);
+}
+
+function enterLab() {
+  menu.classList.remove("visible");
+  labSection.classList.add("visible");
+}
+
+function goBackMenu() {
+  quizSection.classList.remove("visible");
+  labSection.classList.remove("visible");
+  menu.classList.add("visible");
+}
+
+// --- Quiz ---
+const quiz = [
+  { question: "¿Cuál de estos NO es una característica de un exoplaneta?",
+    options: { a:"Orbitar una estrella distinta al Sol", b:"Formarse a partir de la misma nube interestelar que su estrella", c:"Encontrarse fuera del sistema solar", d:"Ser generalmente más pequeño que su estrella" },
+    correct: "c", explanation:"¡Correcto! Los exoplanetas orbitan estrellas fuera de nuestro sistema solar." 
+  },
+  { question: "¿Sabías que los exoplanetas orbitan estrellas distintas al Sol?",
+    options: { a:"Poseer un campo magnético", b:"Formarse en un disco protoplanetario", c:"Orbitar una estrella distinta al Sol", d:"Recibir energía de un cuerpo central" },
+    correct: "c", explanation:"¡Correcto! Orbitan una estrella distinta al Sol, eso los define." 
+  },
+  { question: "Más de 4000 exoplanetas han sido confirmados. ¿Cuál no es una propiedad inherente?",
+    options: { a:"Tener órbita elíptica", b:"Ser uno de los más de 4000 hallados", c:"Estar compuesto por diversos materiales", d:"Tener atmósfera" },
+    correct: "b", explanation:"¡Correcto! El número de hallazgos es un dato humano, no una propiedad del planeta." 
+  },
+  { question: "Un nuevo objeto fue confirmado como exoplaneta. ¿Cuál no es universal para su clasificación?",
+    options: { a:"Tener órbita elíptica", b:"Experimentar temperaturas extremas", c:"Ser principalmente de hidrógeno y helio", d:"Ser rocoso" },
+    correct: "d", explanation:"¡Correcto! No todos los exoplanetas son rocosos." 
+  },
+  { question: "¿Qué afirmación describe la población de exoplanetas más que un solo rasgo?",
+    options: { a:"Variar en tamaño y composición", b:"Tener masa menor que una enana marrón", c:"Influir gravitacionalmente en su estrella", d:"Tener una órbita definida" },
+    correct: "a", explanation:"¡Correcto! Esa es una descripción general de toda la población." 
+  },
+  { question: "Algunos exoplanetas podrían albergar vida. ¿Qué enunciado es potencial, no universal?",
+    options: { a:"Poseer atmósfera con elementos pesados", b:"Podrían ofrecer condiciones para la vida", c:"Recibir luz de una estrella", d:"Mostrar patrones climáticos" },
+    correct: "b", explanation:"¡Correcto! Solo algunos exoplanetas podrían ser habitables." 
+  },
+  { question: "En 2025 se conocen más de 6000 exoplanetas. ¿Cuál es un dato de descubrimiento, no una propiedad física?",
+    options: { a:"Recibir luz de una estrella", b:"Existir fuera del sistema solar", c:"Ser uno de los cuatro tipos principales", d:"Ser parte de los más de 6000 hallazgos" },
+    correct: "d", explanation:"¡Correcto! El número descubierto no es una propiedad física." 
+  },
+  { question: "Hay más planetas que estrellas en la galaxia. ¿Cuál es una tendencia estadística?",
+    options: { a:"Tener una órbita definida", b:"Estar compuesto por materiales variados", c:"Contribuir a que haya más planetas que estrellas", d:"Orbitar un cuerpo distinto a una nebulosa" },
+    correct: "c", explanation:"¡Correcto! Es una tendencia poblacional." 
+  },
+  { question: "Los primeros exoplanetas confirmados en 1992 orbitaban un púlsar. ¿Qué afirmación es contexto histórico?",
+    options: { a:"Poseer atmósfera", b:"Orbitar una estrella", c:"Confirmarse recién desde 1992", d:"Masa menor que una enana marrón" },
+    correct: "c", explanation:"¡Correcto! Es un dato histórico de descubrimiento." 
+  }
+];
+
+let currentQuestion = 0, score = 0, pointsPerCorrect = 10;
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const submitButton = document.querySelector('.submit');
+const feedbackEl = document.getElementById('feedback');
+const progressEl = document.getElementById('progress');
+const scoreEl = document.getElementById('score');
+const funFactEl = document.getElementById('fun-fact');
+const funFacts = [
+  "Los exoplanetas se clasifican en gigantes gaseosos, tipo Neptuno, supertierras y rocosos.",
+  "Los tipos más comunes en la galaxia son las supertierras y mini-Neptunos.",
+  "Algunos exoplanetas han sido fotografiados directamente, aunque la mayoría se detectan indirectamente."
+];
+let firstAttempt = true;
+
+function showFunFact() {
+  funFactEl.textContent = funFacts[Math.floor(Math.random()*funFacts.length)];
+}
+
+function loadQuestion(index){
+  const q = quiz[index];
+  questionEl.textContent = q.question;
+  optionsEl.innerHTML = '';
+  for(let key in q.options){
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="radio" name="quiz" value="${key}"> ${q.options[key]}`;
+    optionsEl.appendChild(label);
+  }
+  feedbackEl.style.display = "none";
+  feedbackEl.className = "feedback";
+  progressEl.textContent = `Progreso (${index+1}/${quiz.length})`;
+  submitButton.textContent = "Responder";
+  firstAttempt = true;
+  showFunFact();
+  submitButton.style.display = '';
+}
+
+submitButton.addEventListener('click', ()=>{
+  const q = quiz[currentQuestion];
+  const selected = document.querySelector('input[name="quiz"]:checked');
+  if(submitButton.textContent==="Siguiente Pregunta"){
+    currentQuestion++;
+    if(currentQuestion<quiz.length){ loadQuestion(currentQuestion); }
+    else {
+      questionEl.textContent="🎉 ¡Has completado el quiz!";
+      optionsEl.innerHTML='';
+      feedbackEl.style.display='none';
+      submitButton.style.display='none';
+      progressEl.textContent=`Puntaje: ${score}`;
+      funFactEl.textContent='';
+    }
+    return;
+  }
+  if(!selected){ alert("Selecciona una respuesta."); return; }
+  if(selected.value===q.correct){
+    if(firstAttempt){ score+=pointsPerCorrect; scoreEl.textContent=`Puntaje: ${score}`; }
+    feedbackEl.textContent=q.explanation;
+    feedbackEl.className="feedback correct";
+  } else {
+    feedbackEl.textContent="Respuesta incorrecta.";
+    feedbackEl.className="feedback wrong";
+  }
+  feedbackEl.style.display="block";
+  firstAttempt=false;
+  submitButton.textContent="Siguiente Pregunta";
+});
+</script>
+
+</body>
+</html>
