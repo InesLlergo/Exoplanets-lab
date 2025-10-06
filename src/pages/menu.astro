@@ -1,115 +1,125 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Elige tu Aventura">
-  <style>
-    .adventure-container {
-        max-width: 800px;
-        width: 90%;
-        text-align: center;
-    }
+<Layout title="Choose Your Adventure">
+    <style>
+        .adventure-container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
 
-    .adventure-header h1 {
-        font-size: 2.5rem;
-        color: #fff;
-    }
-    .adventure-header .subtitle {
-        color: #D1D5DB;
-        max-width: 500px;
-        margin: 0 auto 2.5rem;
-    }
+        .adventure-header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+        .adventure-header .subtitle {
+            color: #d1d5db;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+        }
 
-    .modes {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 2rem;
-    }
+        .modes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
 
-    /* Enlace que se comporta como una tarjeta */
-    a.mode-card {
-        text-decoration: none;
-        color: inherit;
-    }
-    
-    .mode-card {
-        background: rgba(17,24,39,0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 1.5rem;
-        width: 320px;
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        overflow: hidden; /* Para que la imagen no se salga de los bordes redondeados */
-    }
+        /* Enlace que se comporta como una tarjeta */
+        a.mode-card {
+            text-decoration: none;
+            color: inherit;
+        }
 
-    .mode-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
-    }
-    
-    .image-wrapper {
-        width: 100%;
-        height: 180px;
-        background-size: cover;
-        background-position: center;
-    }
+        .mode-card {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            width: 320px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+            overflow: hidden; /* Para que la imagen no se salga de los bordes redondeados */
+        }
 
-    .learning {
-        background-image: url('https://images-ext-1.discordapp.net/external/-zis4JqeV8fsKrDzYMOY_OzUdd3va3JziB8cTBtaqe8/https/img.freepik.com/fotos-premium/planetas-sistema-solar-galaxia-planetas-espacio-planetas-sistema-educacion-fondo-poster-fondo_890077-5199.jpg?format=webp&width=783&height=521');
-    }
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+        }
 
-    .lab {
-        background-image: url('https://images-ext-1.discordapp.net/external/4nfrleIxHXmyzrXCxBrs9Fro-pF7wScfa7ycq75KOAs/%3Fo%3D7%26cb%3D12rm%3D3%26rs%3D1%26pid%3DImgDetMain%26o%3D7%26rm%3D3/https/th.bing.com/th/id/OIP.UTLwYg6zS0fH6TXvC2P0sgHaE7?format=webp&width=593&height=394');
-    }
+        .image-wrapper {
+            width: 100%;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
 
-    .card-content {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
+        .learning {
+            background-image: url("https://images-ext-1.discordapp.net/external/-zis4JqeV8fsKrDzYMOY_OzUdd3va3JziB8cTBtaqe8/https/img.freepik.com/fotos-premium/planetas-sistema-solar-galaxia-planetas-espacio-planetas-sistema-educacion-fondo-poster-fondo_890077-5199.jpg?format=webp&width=783&height=521");
+        }
 
-    .card-content h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-        color: #fff;
-    }
+        .lab {
+            background-image: url("https://images-ext-1.discordapp.net/external/4nfrleIxHXmyzrXCxBrs9Fro-pF7wScfa7ycq75KOAs/%3Fo%3D7%26cb%3D12rm%3D3%26rs%3D1%26pid%3DImgDetMain%26o%3D7%26rm%3D3/https/th.bing.com/th/id/OIP.UTLwYg6zS0fH6TXvC2P0sgHaE7?format=webp&width=593&height=394");
+        }
 
-    .card-content p {
-        color: #9CA3AF;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-        flex-grow: 1;
-    }
+        .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
 
-  </style>
-  <div class="adventure-container">
-    <header class="adventure-header">
-      <h1>Elige tu Aventura</h1>
-      <p class="subtitle">Embárcate en un viaje de exploración. Selecciona tu modo preferido para comenzar.</p>
-    </header>
+        .card-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
 
-    <div class="modes">
-      <a href="/quiz" class="mode-card">
-        <div class="image-wrapper learning"></div>
-        <div class="card-content">
-          <h2>Modo Aprendizaje</h2>
-          <p>Lecciones y pruebas para dominar la ciencia de los exoplanetas.</p>
+        .card-content p {
+            color: #9ca3af;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+    </style>
+    <div class="adventure-container">
+        <header class="adventure-header">
+            <h1>Choose Your Adventure</h1>
+            <p class="subtitle">
+                Embark on a journey of exploration. Select your
+                preferred mode to begin.
+            </p>
+        </header>
+
+        <div class="modes">
+            <a href="/quiz" class="mode-card">
+                <div class="image-wrapper learning"></div>
+                <div class="card-content">
+                    <h2>Learning Mode</h2>
+                    <p>
+                        Lessons and quizzes to master the science of
+                        exoplanets.
+                    </p>
+                </div>
+            </a>
+
+            <a href="/lab" class="mode-card">
+                <div class="image-wrapper lab"></div>
+                <div class="card-content">
+                    <h2>Lab Mode</h2>
+                    <p>
+                        Interactive simulations to explore the
+                        conditions of other worlds.
+                    </p>
+                </div>
+            </a>
         </div>
-      </a>
-
-      <a href="/lab" class="mode-card">
-        <div class="image-wrapper lab"></div>
-        <div class="card-content">
-          <h2>Modo Laboratorio</h2>
-          <p>Simulaciones interactivas para explorar las condiciones de otros mundos.</p>
-        </div>
-      </a>
     </div>
-  </div>
 </Layout>
