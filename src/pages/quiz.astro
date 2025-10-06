@@ -1,295 +1,206 @@
-
 ---
 import Layout from '../layouts/Layout.astro';
 ---
-<Layout title="Quiz: Exoplanet Characteristics">
-    <div class="quiz-container">
-        
-        <nav class="navbar">
-            <div class="logo">CosmosQuest</div>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/lessons">Lessons</a>
-                <a href="/community">Community</a>
-                <a href="/profile">Profile</a>
-            </div>
-            <div class="nav-icons">
-                <div class="notification-icon">🔔</div>
-                <div class="profile-avatar"></div>
-            </div>
-        </nav>
-        
-        <div class="quiz-content">
 
-            <div class="progress-section">
-                <p class="progress-text">Lesson Progress (3/5)</p>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: 60%;"></div>
-                </div>
-            </div>
-
-            <h1 class="question-title">Which of these is NOT a characteristic of an exoplanet?</h1>
-
-            <form class="options-form">
-                
-                <label class="option-label">
-                    <input type="radio" name="answer" value="a" />
-                    <span>Orbiting a star other than our Sun</span>
-                </label>
-
-                <label class="option-label selected">
-                    <input type="radio" name="answer" value="b" checked />
-                    <span>Composed primarily of water</span>
-                </label>
-
-                <label class="option-label">
-                    <input type="radio" name="answer" value="c" />
-                    <span>Having a solid surface</span>
-                </label>
-
-                <label class="option-label">
-                    <input type="radio" name="answer" value="d" />
-                    <span>Located within a habitable zone</span>
-                </label>
-
-                <button type="submit" class="submit-button">
-                    Submit Answer
-                </button>
-            </form>
-
-            <div class="feedback-message feedback-correct">
-                Correct! While some exoplanets may have water, it's not a defining characteristic. Exoplanets are defined by their orbit around a star outside our solar system.
-            </div>
-
-        </div>
-
-    </div>
-</Layout>
-
-<style>
-    /* -------------------------------------- */
-    /* 1. LAYOUT Y CONTENEDOR PRINCIPAL */
-    /* -------------------------------------- */
-    .quiz-container {
-        width: 100%;
-        min-height: 100vh;
-        /* Asegura que el contenido quede centrado vertical y horizontalmente */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /* Padding superior para que la barra de navegación no se pegue al borde */
-        padding-top: 1rem;
+<Layout title="Quiz de Exoplanetas">
+  <style>
+    /* --- Estilos Generales --- */
+    .card {
+      background: rgba(17,24,39,0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1.5rem;
+      padding: 2rem 3rem;
+      max-width: 650px;
+      width: 90%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .quiz-content {
-        width: 100%;
-        max-width: 800px; /* Ancho máximo similar al del diseño */
-        margin-top: 2rem;
-        padding: 0 1rem;
-        color: #F9FAFB;
-    }
-
-    /* -------------------------------------- */
-    /* 2. NAVBAR (Simulación para igualar la imagen) */
-    /* -------------------------------------- */
-    .navbar {
-        width: 100%;
-        max-width: 1200px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 2rem;
-        color: #F9FAFB;
-        font-weight: 600;
-        margin-bottom: 2rem; /* Espacio antes del contenido del quiz */
-    }
-
-    .logo {
-        font-size: 1.5rem;
-        color: #6366F1; /* Color principal del diseño */
-        font-weight: 700;
-    }
-
-    .nav-links a {
-        color: #D1D5DB;
-        text-decoration: none;
-        margin: 0 1rem;
-        transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-        color: #F9FAFB;
-    }
-
-    .nav-icons {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .profile-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: #F0ABFC; /* Color de avatar simulado */
-        border: 2px solid #F9FAFB;
-        /* Simulación de la forma del avatar */
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.88 6-3.88s5.97 1.89 6 3.88c-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E");
-        background-size: 70%;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-
-    /* -------------------------------------- */
-    /* 3. PROGRESO Y PREGUNTA */
-    /* -------------------------------------- */
-    .progress-section {
-        margin-bottom: 2.5rem;
-    }
-
-    .progress-text {
-        color: #9CA3AF;
-        font-size: 0.9rem;
-        text-align: left;
+    .card h1 {
+        font-size: 2rem;
         margin-bottom: 0.5rem;
     }
 
-    .progress-bar-container {
-        width: 100%;
-        height: 8px;
-        background-color: #1F2937; /* Fondo de la barra */
-        border-radius: 4px;
-        overflow: hidden;
-    }
+    /* --- Estilos del Quiz --- */
+    .card h2 { font-size: 1.25rem; margin: 1rem 0; min-height: 3rem; text-align: left; width: 100%;}
+    .options { display:flex; flex-direction:column; align-items:flex-start; gap:.75rem; margin-bottom:1.5rem; width: 100%;}
+    .options label { background:#1f2937; padding:.75rem 1rem; border-radius:.75rem; width:100%; color:#e5e7eb; cursor:pointer; transition: background 0.2s; text-align: left; box-sizing: border-box;}
+    .options label:hover { background:#374151; }
+    input[type="radio"] { margin-right:.75rem; accent-color:#6366f1; }
+    .feedback { margin-top:1rem; padding:.75rem 1rem; border-radius:.75rem; display:none; color:#f9fafb; text-align:left; width: 100%; box-sizing: border-box;}
+    .feedback.correct { background-color: rgba(5,150,105,0.7); }
+    .feedback.wrong { background-color: rgba(220,38,38,0.7); }
+    #score, #progress { color:#fff; margin-bottom:.5rem; }
+    #fun-fact { color:#9ca3af; margin-top: 1.5rem; font-style: italic; min-height: 3rem; width: 100%;}
 
-    .progress-bar-fill {
-        height: 100%;
-        /* El color de la barra de progreso de la imagen */
-        background-color: #6366F1; 
-        transition: width 0.4s ease;
-    }
-
-    .question-title {
-        font-size: 2.25rem; /* similar al de la imagen */
-        font-weight: 700;
-        margin-bottom: 2rem;
-        text-align: left;
-        line-height: 1.3;
-    }
-
-    /* -------------------------------------- */
-    /* 4. OPCIONES (RADIO BUTTONS) */
-    /* -------------------------------------- */
-    .options-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .option-label {
-        display: flex;
-        align-items: center;
-        padding: 1.2rem 1.5rem;
-        background-color: #1F2937; /* Fondo de la opción sin seleccionar */
-        border-radius: 0.75rem;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: background-color 0.2s, border-color 0.2s;
-    }
-
-    .option-label:hover {
-        background-color: #2D3748;
-    }
-
-    /* Estilo para la opción seleccionada */
-    .option-label.selected {
-        background-color: #252843; /* Fondo de la opción seleccionada */
-        border-color: #6366F1; /* Borde del color principal */
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
-    }
-    
-    /* Estilo del texto dentro de la opción */
-    .option-label span {
-        font-size: 1.125rem;
-        margin-left: 1rem;
-        line-height: 1.5;
-    }
-    
-    /* Estilo del Radio Button */
-    .option-label input[type="radio"] {
-        /* Esconder el radio button nativo y estilizarlo con CSS */
-        appearance: none; 
-        width: 20px;
-        height: 20px;
-        min-width: 20px;
-        border: 2px solid #4B5563; /* Borde gris oscuro */
-        border-radius: 50%;
-        position: relative;
-        cursor: pointer;
-        transition: border-color 0.2s;
-    }
-    
-    /* Estado: checked */
-    .option-label input[type="radio"]:checked {
-        border-color: #6366F1; /* Borde del color principal */
-    }
-
-    /* El punto interior del radio button checked */
-    .option-label input[type="radio"]:checked::before {
-        content: '';
-        width: 10px;
-        height: 10px;
-        background-color: #6366F1;
-        border-radius: 50%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    /* -------------------------------------- */
-    /* 5. BOTÓN DE ENVIAR */
-    /* -------------------------------------- */
-    .submit-button {
-        display: block;
-        width: 100%;
-        max-width: 300px; /* Ancho fijo similar al de la imagen */
-        margin: 2rem auto 0; /* Centrar el botón */
-        background: linear-gradient(to right, #4f46e5, #6366f1);
-        color: #fff;
-        border: none;
-        border-radius: 0.75rem;
-        padding: 0.9rem 1.5rem;
-        font-size: 1.125rem;
-        font-weight: 600;
-        cursor: pointer;
+    .submit {
+        background: linear-gradient(to right,#4f46e5,#6366f1);
+        color:#fff; border:none; border-radius:.75rem; padding:.8rem 1.5rem;
+        font-size:1rem; font-weight:600; cursor:pointer;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        box-shadow:0 4px 15px rgba(79,70,229,0.4);
+        width: 100%;
+    }
+    .submit:hover { transform: scale(1.02); box-shadow:0 6px 20px rgba(79,70,229,0.5); }
+    
+    .back-btn {
+        margin-top: 1rem;
+        background: linear-gradient(to right, #16a34a, #22c55e);
+        box-shadow:0 4px 15px rgba(22, 163, 74, 0.4);
+        width: 100%;
+        padding:.8rem 1.5rem;
+        border-radius:.75rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: white;
+    }
+    a.back-btn { text-decoration: none; display: inline-block; box-sizing: border-box;}
+    .back-btn:hover {
+        transform: scale(1.02);
+        box-shadow:0 6px 20px rgba(22, 163, 74, 0.5);
+    }
+  </style>
+
+  <section id="quiz">
+    <main class="card">
+      <h1>Quiz de Exoplanetas 🌌</h1>
+      <p id="score">Puntaje: 0</p>
+      <p id="progress">Pregunta 1/9</p>
+      <h2 id="question">Cargando pregunta...</h2>
+      <div class="options" id="options"></div>
+      <button class="submit">Responder</button>
+      <div class="feedback" id="feedback"></div>
+      <p id="fun-fact"></p>
+      <a href="/" class="back-btn">Regresar al Menú</a>
+    </main>
+  </section>
+
+  <script>
+    const quiz = [
+        { question: "¿Cuál de estos NO es una característica de un exoplaneta?",
+            options: { a:"Orbitar una estrella distinta al Sol", b:"Formarse a partir de la misma nube interestelar que su estrella", c:"Encontrarse fuera del sistema solar", d:"Ser generalmente más pequeño que su estrella" },
+            correct: "b", explanation:"¡Correcto! Si bien se forman de nubes interestelares, no necesariamente es la misma que su estrella actual, ya que pueden ser capturados."
+        },
+        { question: "¿Cuál es el método de detección que observa la disminución del brillo de una estrella cuando un planeta pasa por delante?",
+            options: { a:"Velocidad radial", b:"Tránsito", c:"Microlente gravitacional", d:"Imagen directa" },
+            correct: "b", explanation:"¡Correcto! El método de tránsito es el más exitoso hasta la fecha para encontrar exoplanetas."
+        },
+        { question: "Un exoplaneta tipo 'Júpiter caliente' se caracteriza por...",
+            options: { a:"Ser rocoso y estar cerca de su estrella", b:"Ser un gigante gaseoso que orbita muy cerca de su estrella", c:"Tener agua líquida en su superficie", d:"Orbitar una estrella muy fría" },
+            correct: "b", explanation:"¡Correcto! Son gigantes gaseosos con periodos orbitales muy cortos, a veces de solo unos pocos días."
+        },
+        { question: "La 'zona habitable' alrededor de una estrella es la región donde...",
+            options: { a:"Un planeta puede tener lunas", b:"La vida alienígena está confirmada", c:"Un planeta podría tener agua líquida en su superficie", d:"La radiación estelar es mínima" },
+            correct: "c", explanation:"¡Correcto! Es la zona orbital donde las temperaturas permiten la existencia de agua líquida."
+        },
+        { question: "¿Qué es una 'Supertierra'?",
+            options: { a:"Un planeta más grande que la Tierra pero más pequeño que Neptuno", b:"Un planeta con continentes similares a la Tierra", c:"Una luna más grande que la Tierra", d:"Un planeta que orbita dos estrellas" },
+            correct: "a", explanation:"¡Correcto! Son planetas con una masa mayor a la de la Tierra pero considerablemente menor que los gigantes de hielo del sistema solar."
+        },
+        { question: "¿Cuál fue el primer telescopio espacial diseñado específicamente para buscar exoplanetas?",
+            options: { a:"Hubble", b:"James Webb", c:"Spitzer", d:"Kepler" },
+            correct: "d", explanation:"¡Correcto! El Telescopio Espacial Kepler revolucionó la búsqueda de exoplanetas, descubriendo miles de ellos."
+        },
+        { question: "El exoplaneta Proxima Centauri b es notable porque...",
+            options: { a:"Es el más grande jamás descubierto", b:"Es el exoplaneta conocido más cercano a la Tierra", c:"Tiene anillos como Saturno", d:"Fue el primero en ser descubierto" },
+            correct: "b", explanation:"¡Correcto! Orbita Proxima Centauri, la estrella más cercana a nuestro Sol, a unos 4.2 años luz de distancia."
+        },
+        { question: "Si un exoplaneta es detectado por el método de 'velocidad radial', ¿qué se está midiendo?",
+            options: { a:"El cambio de color del planeta", b:"El pequeño 'bamboleo' gravitacional que el planeta induce en su estrella", c:"La luz del planeta reflejada en su atmósfera", d:"El tiempo que tarda el planeta en orbitar la estrella" },
+            correct: "b", explanation:"¡Correcto! Este método detecta cambios sutiles en el espectro de luz de la estrella causados por su bamboleo gravitacional."
+        },
+        { question: "Los 'planetas errantes' o 'vagabundos' son objetos que...",
+            options: { a:"Orbitan su estrella en dirección contraria", b:"No orbitan ninguna estrella y vagan por la galaxia", c:"Cambian de órbita constantemente", d:"Tienen atmósferas muy densas" },
+            correct: "b", explanation:"¡Correcto! Son objetos de masa planetaria que han sido expulsados de sus sistemas y viajan solos por el espacio."
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    const pointsPerCorrect = 10;
+    
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const submitButton = document.querySelector('.submit');
+    const feedbackEl = document.getElementById('feedback');
+    const progressEl = document.getElementById('progress');
+    const scoreEl = document.getElementById('score');
+    const funFactEl = document.getElementById('fun-fact');
+
+    const funFacts = [
+        "Se estima que hay más planetas que estrellas en nuestra galaxia, la Vía Láctea.",
+        "El exoplaneta 55 Cancri e podría estar compuesto en gran parte de diamante.",
+        "Algunos exoplanetas orbitan púlsares, los restos ultradensos de estrellas masivas que han explotado."
+    ];
+    let firstAttempt = true;
+
+    function showFunFact() {
+      funFactEl.textContent = "Dato curioso: " + funFacts[Math.floor(Math.random()*funFacts.length)];
     }
 
-    .submit-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+    function loadQuestion(index){
+      const q = quiz[index];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = '';
+      for(let key in q.options){
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="radio" name="quiz" value="${key}"> ${q.options[key]}`;
+        optionsEl.appendChild(label);
+      }
+      feedbackEl.style.display = "none";
+      feedbackEl.className = "feedback";
+      progressEl.textContent = `Pregunta ${index + 1}/${quiz.length}`;
+      submitButton.textContent = "Responder";
+      firstAttempt = true;
+      showFunFact();
+      submitButton.style.display = '';
     }
 
-    /* -------------------------------------- */
-    /* 6. MENSAJE DE FEEDBACK */
-    /* -------------------------------------- */
-    .feedback-message {
-        padding: 1rem 1.5rem;
-        border-radius: 0.75rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        text-align: left;
-        margin-top: 1.5rem;
-        border: 1px solid;
-    }
-
-    /* Estilo para el mensaje 'Correcto' */
-    .feedback-correct {
-        background-color: rgba(6, 95, 70, 0.7); /* Verde oscuro */
-        border-color: #34D399; /* Borde verde claro */
-        color: #D1FAE5; /* Texto blanco verdoso */
-    }
-</style>
+    submitButton.addEventListener('click', ()=>{
+      const q = quiz[currentQuestion];
+      const selected = document.querySelector('input[name="quiz"]:checked');
+      
+      if(submitButton.textContent === "Siguiente Pregunta"){
+        currentQuestion++;
+        if(currentQuestion < quiz.length){
+          loadQuestion(currentQuestion);
+        } else {
+          questionEl.textContent="🎉 ¡Has completado el quiz!";
+          optionsEl.innerHTML='';
+          feedbackEl.style.display='none';
+          submitButton.style.display='none';
+          progressEl.textContent=`Puntaje Final: ${score} de ${quiz.length * pointsPerCorrect}`;
+          funFactEl.textContent = "¡Gracias por jugar! Sigue explorando el universo.";
+        }
+        return;
+      }
+      
+      if(!selected){
+        alert("Por favor, selecciona una respuesta.");
+        return;
+      }
+      
+      if(selected.value === q.correct){
+        if(firstAttempt){
+          score += pointsPerCorrect;
+          scoreEl.textContent = `Puntaje: ${score}`;
+        }
+        feedbackEl.textContent = q.explanation;
+        feedbackEl.className = "feedback correct";
+      } else {
+        feedbackEl.textContent = "Respuesta incorrecta. La respuesta correcta era: " + q.options[q.correct];
+        feedbackEl.className = "feedback wrong";
+      }
+      
+      feedbackEl.style.display = "block";
+      firstAttempt = false;
+      submitButton.textContent = "Siguiente Pregunta";
+    });
+    
+    // Cargar la primera pregunta al iniciar la página
+    loadQuestion(currentQuestion);
+  </script>
+</Layout>
