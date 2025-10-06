@@ -11,7 +11,7 @@ import Layout from '../layouts/Layout.astro';
 // --- TERMINA EL FRONTMATTER DE ASTRO ---
 ---
 
-<Layout title="Laboratorio de Tránsito - Simulación Completa">
+<Layout title="Transit laboratory - Complete Simulation">
   
   <style is:global>
     body { display: block; overflow-x: hidden; }
@@ -71,9 +71,9 @@ import Layout from '../layouts/Layout.astro';
 
   <div class="lab-page">
     <header class="lab-header">
-      <h1>Simulador de Tránsito Exoplanetario</h1>
-      <p>Una herramienta interactiva para visualizar el método de tránsito, una técnica clave en la detección de planetas fuera de nuestro sistema solar.</p>
-      <a href="/" class="back-btn">Volver al Menú Principal</a>
+      <h1>Exoplanetary simulator</h1>
+      <p>An interactive tool for visualizing the transit method, a key technique in the detection of planets outside our solar system.</p>
+      <a href="/" class="back-btn">Back to Main Menu</a>
     </header>
 
     <main class="lab-grid">
@@ -84,43 +84,43 @@ import Layout from '../layouts/Layout.astro';
 
       <aside class="ui-panel">
         <div class="btn-container">
-          <button id="playBtn" class="btn btn-primary">▶️ Reproducir</button>
-          <button id="resetBtn" class="btn btn-secondary">↺ Reiniciar</button>
+          <button id="playBtn" class="btn btn-primary">▶️ Play</button>
+          <button id="resetBtn" class="btn btn-secondary">↺ Reset</button>
         </div>
         
         <fieldset>
-          <legend>Simulación</legend>
+          <legend>Simulation</legend>
           <div class="control-row">
-            <label for="speedSlider">Velocidad (días/segundo)</label>
+            <label for="speedSlider">Velocity (days/second)</label>
             <span id="speedVal">50</span>
           </div>
           <input id="speedSlider" type="range" min="1" max="500" step="1" value="50">
         </fieldset>
 
         <fieldset>
-          <legend>Planeta</legend>
-          <div class="control-row"><label for="radiusSlider">Radio (R⊕)</label><span id="radiusVal">1</span></div>
+          <legend>Planet</legend>
+          <div class="control-row"><label for="radiusSlider">Radius (R⊕)</label><span id="radiusVal">1</span></div>
           <input id="radiusSlider" type="range" min="0.1" max="20" step="0.1" value="1">
-          <div class="control-row"><label for="periodSlider">Periodo (días)</label><span id="periodVal">365</span></div>
+          <div class="control-row"><label for="periodSlider">Period (days)</label><span id="periodVal">365</span></div>
           <input id="periodSlider" type="range" min="10" max="2000" value="365">
-          <div class="control-row"><label for="semiMajorAxisSlider">Semieje Mayor (AU)</label><span id="semiMajorAxisVal">1</span></div>
+          <div class="control-row"><label for="semiMajorAxisSlider">Major axis(AU)</label><span id="semiMajorAxisVal">1</span></div>
           <input id="semiMajorAxisSlider" type="range" min="0.1" max="5" step="0.01" value="1">
-          <div class="control-row"><label for="inclinationSlider">Inclinación (°)</label><span id="inclinationVal">90</span></div>
+          <div class="control-row"><label for="inclinationSlider">Inclination(°)</label><span id="inclinationVal">90</span></div>
           <input id="inclinationSlider" type="range" min="80" max="90" step="0.1" value="90">
         </fieldset>
         
         <fieldset>
-          <legend>Estrella central</legend>
-          <div class="control-row"><label for="starRadiusSlider">Radio estelar (R☉)</label><span id="starRadiusVal">1</span></div>
+          <legend>Central Star</legend>
+          <div class="control-row"><label for="starRadiusSlider">Stellar radio (R☉)</label><span id="starRadiusVal">1</span></div>
           <input id="starRadiusSlider" type="range" min="0.5" max="2" step="0.01" value="1">
         </fieldset>
-        
-        <p class="description-text">La gráfica muestra el brillo relativo y los tránsitos detectados.</p>
-        <div id="results">Esperando datos...</div>
+
+        <p class="description-text">The graphic shows the relative brightness and the detected transits.</p>
+        <div id="results">Waiting for data</div>
       </aside>
     </main>
 
-    <footer class="lab-footer">Laboratorio Interactivo de Aventura Espacial</footer>
+    <footer class="lab-footer">Interactive laboratory space adventure</footer>
   </div>
 
   <script>
@@ -213,7 +213,7 @@ import Layout from '../layouts/Layout.astro';
       // --- LISTENERS DE EVENTOS ---
       playBtn.addEventListener('click', () => {
         isPlaying = !isPlaying;
-        playBtn.innerHTML = isPlaying ? "⏸️ Pausar" : "▶️ Reproducir";
+        playBtn.innerHTML = isPlaying ? "⏸️ Pause" : "▶️ Play";
         if (isPlaying) lastTimestamp = performance.now();
       });
 
@@ -221,7 +221,7 @@ import Layout from '../layouts/Layout.astro';
       resetBtn.addEventListener('click', () => {
         // 1. Pausar la simulación
         isPlaying = false;
-        playBtn.innerHTML = "▶️ Reproducir";
+        playBtn.innerHTML = "▶️ Play";
 
         // 2. Reiniciar el estado de la animación
         orbitalAngle_rad = 0;
