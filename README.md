@@ -2,11 +2,14 @@
 
 # Exoplanets Lab
 
-**Aplicación web interactiva sobre exoplanetas: simulador del método de tránsito, exploración y quiz.**
+### Interactive educational web app about exoplanets — transit-method simulator on HTML canvas, quiz and exploration.
 
-[![Live demo](https://img.shields.io/badge/demo-exoplanetslab.vercel.app-4F46E5?style=for-the-badge)](https://exoplanetslab.vercel.app/lab)
-![Astro 5](https://img.shields.io/badge/Astro-5-BC52EE?style=for-the-badge&logo=astro&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+[![Astro 5](https://img.shields.io/badge/Astro_5-BC52EE?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Canvas API](https://img.shields.io/badge/HTML_Canvas-000000?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+
+[![Live demo](https://img.shields.io/badge/LIVE_DEMO-exoplanetslab.vercel.app-4F46E5?style=flat-square)](https://exoplanetslab.vercel.app/lab)
+[![Deployed with Vercel](https://img.shields.io/badge/deployed%20with-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
 
 </div>
 
